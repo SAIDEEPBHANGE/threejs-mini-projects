@@ -44,6 +44,10 @@ let clock = new THREE.Clock();
 // adding orbit controls
 const controls = new OrbitControls(camera, renderer.domElement);
 // controls.update() must be called after any manual changes to the camera's transform
+controls.enableDamping = true; // this is add smoothness
+controls.autoRotate = true; // this will rotate automatically
+// controls.autoRotateSpeed = 5; // change roatation speed
+controls.enableZoom = true; // helps to zoom
 controls.update();
 function animate() {
   window.requestAnimationFrame(animate);
