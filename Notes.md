@@ -3,15 +3,10 @@
 ## 1. Scene
 
 The first important concept in Three.js is the Scene.
-
 The Scene represents the complete 3D world.
-
 In simple words, we can say that the Scene is the complete world of our 3D application.
-
 Everything that exists in our 3D world is added to the Scene.
-
 An object may be visible to the camera or it may not be visible to the camera, but the object can still exist inside the Scene.
-
 Example:
 
 ```js
@@ -19,9 +14,7 @@ const scene = new THREE.Scene();
 ```
 
 Think of the Scene as the real world.
-
 The complete world exists around you, even though you cannot see everything at the same time.
-
 In Three.js:
 
 > Scene = Complete 3D World
@@ -29,11 +22,8 @@ In Three.js:
 ## 2. Camera
 
 The Camera represents the perspective or viewpoint from which we see the 3D world.
-
 The Camera does not show everything that exists inside the Scene.
-
 It only shows the part of the 3D world that is within its view.
-
 Example:
 
 ```js
@@ -46,9 +36,7 @@ const camera = new THREE.PerspectiveCamera(
 ```
 
 Think of the Camera like your eyes or a real camera.
-
 The complete world exists around you, but you can only see a specific portion of that world.
-
 In Three.js:
 
 > Camera = Perspective / Viewpoint
@@ -56,7 +44,6 @@ In Three.js:
 ## 3. Mesh
 
 A Mesh is a 3D object.
-
 A Mesh is created by combining two main things:
 
 ```mermaid
@@ -75,7 +62,6 @@ In simple words:
 ## 4. Geometry
 
 Geometry defines the shape and structure of a 3D object.
-
 Examples:
 
 - Box
@@ -83,15 +69,13 @@ Examples:
 - Plane
 - Cylinder
 - Cone
-
-Example:
+  Example:
 
 ```js
 const geometry = new THREE.BoxGeometry(1, 1, 1);
 ```
 
 This creates the geometry for a box or cube.
-
 In simple words:
 
 > Geometry = Shape of the Object
@@ -99,7 +83,6 @@ In simple words:
 ## 5. Material
 
 Material defines the appearance and properties of the surface of the object.
-
 For example, Material can define:
 
 - Color
@@ -107,8 +90,7 @@ For example, Material can define:
 - Whether the surface is shiny
 - Whether the surface is transparent
 - Other visual properties
-
-Example:
+  Example:
 
 ```js
 const material = new THREE.MeshBasicMaterial({
@@ -117,7 +99,6 @@ const material = new THREE.MeshBasicMaterial({
 ```
 
 This creates a red material.
-
 In simple words:
 
 > Material = Appearance / Properties of the Shape
@@ -125,7 +106,6 @@ In simple words:
 ## 6. Creating a Mesh
 
 Once we have Geometry and Material, we can combine them to create a Mesh.
-
 Example:
 
 ```js
@@ -154,16 +134,12 @@ flowchart TD
 ## 7. Renderer
 
 The Renderer is responsible for displaying the 3D world on the screen.
-
 It takes the Scene and Camera and renders what the Camera can see.
-
 Example:
 
 ```js
 const renderer = new THREE.WebGLRenderer();
-
 renderer.setSize(window.innerWidth, window.innerHeight);
-
 document.body.appendChild(renderer.domElement);
 ```
 
@@ -185,35 +161,27 @@ flowchart TD
 ## 8. requestAnimationFrame()
 
 requestAnimationFrame() is used to create an animation loop.
-
 It tells the browser to execute a function before the next screen repaint.
-
 Example:
 
 ```js
 function animate() {
   requestAnimationFrame(animate);
-
   renderer.render(scene, camera);
 }
-
 animate();
 ```
 
 This allows us to continuously update and render the 3D world.
-
 For example, if we want to rotate a cube:
 
 ```js
 function animate() {
   requestAnimationFrame(animate);
-
   mesh.rotation.x += 0.01;
   mesh.rotation.y += 0.01;
-
   renderer.render(scene, camera);
 }
-
 animate();
 ```
 
@@ -223,10 +191,8 @@ The cube continuously rotates because the animation function keeps running.
 
 ```js
 import \* as THREE from "three";
-
 // 1. Create the Scene
 const scene = new THREE.Scene();
-
 // 2. Create the Camera
 const camera = new THREE.PerspectiveCamera(
 75,
@@ -234,61 +200,48 @@ window.innerWidth / window.innerHeight,
 0.1,
 1000
 );
-
 // Move the Camera away from the object
 camera.position.z = 5;
-
 // 3. Create Geometry
 const geometry = new THREE.BoxGeometry(
 1,
 1,
 1
 );
-
 // 4. Create Material
 const material = new THREE.MeshBasicMaterial({
 color: 0xff0000
 });
-
 // 5. Create Mesh
 const mesh = new THREE.Mesh(
 geometry,
 material
 );
-
 // 6. Add Mesh to Scene
 scene.add(mesh);
-
 // 7. Create Renderer
 const renderer = new THREE.WebGLRenderer();
-
 // Set Renderer size
 renderer.setSize(
 window.innerWidth,
 window.innerHeight
 );
-
 // Add Renderer to the HTML document
 document.body.appendChild(
 renderer.domElement
 );
-
 // 8. Animation Loop
 function animate() {
 requestAnimationFrame(animate);
-
     // Rotate the Mesh
     mesh.rotation.x += 0.01;
     mesh.rotation.y += 0.01;
-
     // Render the Scene through the Camera
     renderer.render(
         scene,
         camera
     );
-
 }
-
 // Start the animation
 animate();
 ```
@@ -297,22 +250,16 @@ animate();
 
 Scene
 = Complete 3D World
-
 Camera
 = Perspective / Viewpoint
-
 Mesh
 = 3D Object
-
 Geometry
 = Shape of the Object
-
 Material
 = Appearance / Properties of the Object
-
 Renderer
 = Displays the 3D World on the Screen
-
 requestAnimationFrame()
 = Continuously updates and renders the 3D World
 
@@ -325,15 +272,11 @@ flowchart TD
     C3W --> MH[Mesh]
     MH --> GM[Geometry + Material]
     GM --> 3DO[3D Object]
-
     C[Camera]
     C --> CANS[Defines what part of the Scene we can see]
-
     R[Renderer]
     R --> SC[Takes Scene + Camera]
     SC --> SCANS[Displays the result on the Screen]
-
-
     RAF[requestAnimationFrame]
     RAFANS[Keeps updating and rendering the Scene]
 ```

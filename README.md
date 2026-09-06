@@ -1,8 +1,6 @@
 # 5 Beginner-Friendly Three.js Project Ideas
 
-Since I already understand JavaScript, HTML, and Tailwind CSS, I want to build small Three.js projects that challenge me but are still realistic for a beginner.
-
----
+## Since I already understand JavaScript, HTML, and Tailwind CSS, I want to build small Three.js projects that challenge me but are still realistic for a beginner.
 
 ## 1. 🪐 Interactive Solar System
 
@@ -26,9 +24,7 @@ Build a small solar-system visualization with:
 
 ### Challenge
 
-Add Tailwind CSS controls that let me change the Earth's orbit speed.
-
----
+## Add Tailwind CSS controls that let me change the Earth's orbit speed.
 
 ## 2. 🎨 3D Product Viewer
 
@@ -79,9 +75,7 @@ Make the stars respond to the mouse movement.
 
 ### Stretch Goal
 
-Add a "Warp Speed" button.
-
----
+## Add a "Warp Speed" button.
 
 ## 4. 🧊 3D Shape Playground
 
@@ -115,18 +109,14 @@ Add sliders for:
 ### Example UI
 
     3D Playground
-
     [ Cube ] [ Sphere ] [ Torus ] [ Cone ]
-
            ┌─────────┐
            │         │
            │    🔵   │
            │         │
            └─────────┘
-
     Rotation: ─────●────
     Scale:    ───●──────
-
     Color: [🔴] [🔵] [🟢]
 
 ---
@@ -141,11 +131,8 @@ Create a simple 3D room containing:
 - Lamp
 - Chair
 - A few small objects
-
-You don't need realistic models.
-
-Build most objects using simple geometries such as:
-
+  You don't need realistic models.
+  Build most objects using simple geometries such as:
 - BoxGeometry
 - CylinderGeometry
 - SphereGeometry
@@ -186,15 +173,9 @@ Build the projects in this order:
 # Learning Rule
 
 Try to build the first version of each project without following a complete tutorial.
-
 When you get stuck, search for only the specific concept you need.
-
 For example:
-
 "Three.js how to rotate a mesh"
-
 instead of:
-
 "Three.js complete solar system tutorial"
-
 This will help me understand Three.js instead of simply copying projects.
