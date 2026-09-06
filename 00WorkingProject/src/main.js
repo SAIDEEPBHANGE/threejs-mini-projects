@@ -21,7 +21,7 @@ const camera = new THREE.PerspectiveCamera(
 const renderer = new THREE.WebGLRenderer({ canvas: canvas });
 renderer.setSize(window.innerWidth, window.innerHeight);
 // Created Geometry
-const geometry = new THREE.BoxGeometry(1, 1, 1);
+const geometry = new THREE.SphereGeometry(1, 10, 10);
 const material = new THREE.MeshBasicMaterial({
   color: 0xfff858,
   wireframe: true,
@@ -53,8 +53,6 @@ function animate() {
   window.requestAnimationFrame(animate);
   controls.update();
   renderer.render(scene, camera);
-  cube.rotation.x = clock.getElapsedTime();
-  cube.rotation.y = clock.getElapsedTime();
-  cube.rotation.z = clock.getElapsedTime();
+  cube.rotateOnAxis = clock.getElapsedTime();
 }
 animate();
