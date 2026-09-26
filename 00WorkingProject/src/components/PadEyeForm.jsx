@@ -223,22 +223,26 @@ export function PadEyeForm({
                       updateStiffener(index, "topSize", value)
                     }
                   />
-                  <Field
-                    label="Bottom Size"
-                    value={stiffener.bottomSize}
-                    onChange={(value) =>
-                      updateStiffener(index, "bottomSize", value)
-                    }
-                  />
-                  <div className="col-span-2">
+                  {stiffener.type !== "curved" && (
                     <Field
-                      label="Bottom Radius (Rs)"
-                      value={stiffener.bottomRadius}
+                      label="Bottom Size"
+                      value={stiffener.bottomSize}
                       onChange={(value) =>
-                        updateStiffener(index, "bottomRadius", value)
+                        updateStiffener(index, "bottomSize", value)
                       }
                     />
-                  </div>
+                  )}
+                  {stiffener.type === "curved" && (
+                    <div className="col-span-2">
+                      <Field
+                        label="Bottom Pipe Radius"
+                        value={stiffener.bottomRadius}
+                        onChange={(value) =>
+                          updateStiffener(index, "bottomRadius", value)
+                        }
+                      />
+                    </div>
+                  )}
                 </div>
               </div>
             ))}

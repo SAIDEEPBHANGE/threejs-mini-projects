@@ -19,9 +19,9 @@
       "type": "flat",
       "position": "left",
       "thickness": 10,
-      "offset": 40,
-      "topSize": 80,
-      "bottomSize": 100,
+      "offset": 200,
+      "topSize": 30,
+      "bottomSize": 30,
       "bottomRadius": 0
     },
     {
@@ -30,9 +30,28 @@
       "position": "right",
       "thickness": 12,
       "offset": 40,
-      "topSize": 80,
-      "bottomSize": 100,
+      "topSize": 0,
       "bottomRadius": 50
+    },
+    {
+      "id": "ST-03",
+      "type": "angled",
+      "position": "left",
+      "thickness": 10,
+      "offset": 0,
+      "topSize": 0,
+      "bottomSize": 150,
+      "bottomRadius": 0
+    },
+    {
+      "id": "ST-04",
+      "type": "flat",
+      "position": "left",
+      "thickness": 10,
+      "offset": 245,
+      "topSize": 30,
+      "bottomSize": 30,
+      "bottomRadius": 0
     }
   ]
 }
