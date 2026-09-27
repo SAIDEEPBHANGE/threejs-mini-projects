@@ -36,3 +36,60 @@ select {
 canvas {
   display: block;
 }
+
+[data-theme="dark"] {
+  color-scheme: dark;
+  background-color: #12181e;
+  color: #e2e8f0;
+}
+
+[data-theme="dark"] .bg-slate-100 {
+  background-color: #12181e;
+}
+
+[data-theme="dark"] .bg-white {
+  background-color: #1d2732;
+}
+
+[data-theme="dark"] .bg-slate-50 {
+  background-color: #25313d;
+}
+
+[data-theme="dark"] .text-slate-800,
+[data-theme="dark"] .text-slate-700 {
+  color: #e2e8f0;
+}
+
+[data-theme="dark"] .text-slate-600 {
+  color: #b4c0cc;
+}
+
+[data-theme="dark"] .text-slate-500 {
+  color: #96a6b5;
+}
+
+[data-theme="dark"] .border-slate-200 {
+  border-color: #3b4a58;
+}
+
+[data-theme="dark"] .border-slate-300 {
+  border-color: #526273;
+}
+
+[data-theme="dark"] .bg-emerald-100 {
+  background-color: #123b35;
+}
+
+[data-theme="dark"] .text-emerald-700 {
+  color: #6ee7b7;
+}
+
+[data-theme="dark"] input,
+[data-theme="dark"] select {
+  background-color: #17212a;
+  color: #e2e8f0;
+}
+
+[data-theme="dark"] input::placeholder {
+  color: #96a6b5;
+}

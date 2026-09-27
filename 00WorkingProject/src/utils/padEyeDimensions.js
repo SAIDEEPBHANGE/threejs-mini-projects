@@ -13,22 +13,28 @@ function addLine(group, points) {
 }
 
 function addLabel(group, text, position, size) {
+  const lines = text.split("\n");
   const canvas = document.createElement("canvas");
-  canvas.width = 512;
-  canvas.height = 128;
+  const longestLine = Math.max(...lines.map((line) => line.length));
+  canvas.width = Math.min(720, Math.max(360, longestLine * 21 + 48));
+  canvas.height = 32 + lines.length * 52;
   const context = canvas.getContext("2d");
   context.fillStyle = "rgba(255, 255, 255, 0.92)";
   context.beginPath();
-  context.roundRect(8, 8, 496, 112, 14);
+  context.roundRect(8, 8, canvas.width - 16, canvas.height - 16, 14);
   context.fill();
   context.strokeStyle = "#b42318";
   context.lineWidth = 5;
   context.stroke();
   context.fillStyle = "#7f1d1d";
-  context.font = "600 54px Segoe UI, sans-serif";
+  context.font = "600 32px Segoe UI, sans-serif";
   context.textAlign = "center";
   context.textBaseline = "middle";
-  context.fillText(text, 256, 64, 470);
+  const lineHeight = 44;
+  const firstLineY = canvas.height / 2 - ((lines.length - 1) * lineHeight) / 2;
+  lines.forEach((line, index) => {
+    context.fillText(line, canvas.width / 2, firstLineY + index * lineHeight);
+  });
 
   const texture = new THREE.CanvasTexture(canvas);
   texture.colorSpace = THREE.SRGBColorSpace;
@@ -39,9 +45,10 @@ function addLabel(group, text, position, size) {
   });
   const sprite = new THREE.Sprite(material);
   sprite.position.copy(position);
+  const worldHeight = size * 0.72 * lines.length;
   sprite.scale.set(
-    Math.max(size * 2, text.length * size * 0.58),
-    size * 0.72,
+    worldHeight * (canvas.width / canvas.height),
+    worldHeight,
     1,
   );
   sprite.renderOrder = 11;
@@ -134,39 +141,52 @@ export function createPadEyeDimensions(padEye) {
     "y",
   );
 
-  const details = [
-    ...padEye.cheekPlates.map(
-      (plate) => `${plate.id} R${plate.radius} T${plate.thickness}`,
-    ),
-    ...padEye.stiffeners.map((stiffener) => {
-      const baseWidth =
-        stiffener.position === "left"
-          ? leftWidth
-          : stiffener.position === "right"
-            ? rightWidth
-            : null;
-      const atBase =
-        baseWidth !== null &&
-        Math.abs(Number(stiffener.offset) - baseWidth) <=
-          (Number(stiffener.thickness) || 0) / 2;
-      const height = atBase
-        ? Number(stiffener.height) || 0
-        : `auto ${stiffener.type}`;
-      const sizeDetails =
-        stiffener.type === "curved"
-          ? `TOP${stiffener.topSize} R${stiffener.bottomRadius}`
-          : `TOP${stiffener.topSize} BOT${stiffener.bottomSize}`;
-      return `${stiffener.id} ${stiffener.type} OFF${stiffener.offset} T${stiffener.thickness} ${sizeDetails} H${height}`;
-    }),
-  ];
-
-  details.forEach((detail, index) => {
-    addLabel(
-      group,
-      detail,
-      point(-leftWidth - size * 6, topY - size * (index + 1.5)),
-      size * 0.75,
+  const detailColumns = { left: [], right: [] };
+  padEye.cheekPlates.forEach((plate, index) => {
+    const column = index % 2 === 0 ? "left" : "right";
+    detailColumns[column].push(
+      `${plate.id}\nR ${plate.radius}  |  T ${plate.thickness} ${padEye.units}`,
     );
+  });
+
+  padEye.stiffeners.forEach((stiffener) => {
+    const baseWidth =
+      stiffener.position === "left"
+        ? leftWidth
+        : stiffener.position === "right"
+          ? rightWidth
+          : null;
+    const atBase =
+      baseWidth !== null &&
+      Math.abs(Number(stiffener.offset) - baseWidth) <=
+        (Number(stiffener.thickness) || 0) / 2;
+    const height = atBase ? `${Number(stiffener.height) || 0}` : "auto";
+    const sizeDetails =
+      stiffener.type === "curved"
+        ? `TOP ${stiffener.topSize}  |  R ${stiffener.bottomRadius}`
+        : `TOP ${stiffener.topSize}  |  BOT ${stiffener.bottomSize}`;
+    const details = `${stiffener.id}  |  ${stiffener.type.toUpperCase()}\nOFF ${stiffener.offset}  |  T ${stiffener.thickness}\n${sizeDetails}  |  H ${height}`;
+    const column =
+      stiffener.position === "left"
+        ? "left"
+        : stiffener.position === "right"
+          ? "right"
+          : detailColumns.left.length <= detailColumns.right.length
+            ? "left"
+            : "right";
+    detailColumns[column].push(details);
+  });
+
+  ["left", "right"].forEach((column) => {
+    const x = column === "left" ? -leftWidth - size * 8 : rightWidth + size * 8;
+    detailColumns[column].forEach((detail, index) => {
+      addLabel(
+        group,
+        detail,
+        point(x, topY - size * (1.8 + index * 2.7)),
+        size * 0.75,
+      );
+    });
   });
 
   return group;

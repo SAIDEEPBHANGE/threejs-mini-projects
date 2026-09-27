@@ -3,7 +3,7 @@ import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import { buildPadEyeModel } from "../utils/padEyeGeometry";
 
-export function PadEyeCanvas({ padEye }) {
+export function PadEyeCanvas({ padEye, isDark }) {
   const canvasRef = useRef(null);
 
   useEffect(() => {
@@ -11,7 +11,7 @@ export function PadEyeCanvas({ padEye }) {
 
     const host = canvasRef.current;
     const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0xf8fafc);
+    scene.background = new THREE.Color(isDark ? 0x12181e : 0xf8fafc);
 
     const camera = new THREE.PerspectiveCamera(
       35,
@@ -53,7 +53,7 @@ export function PadEyeCanvas({ padEye }) {
     const maxDimension = Math.max(size.x, size.y, size.z, 1);
     const distance =
       maxDimension / (2 * Math.tan((camera.fov * Math.PI) / 360)) + 90;
-    controls.maxDistance = Math.max(900, distance * 20);
+    controls.maxDistance = distance * 4;
     camera.far = Math.max(10000, maxDimension * 100);
     camera.updateProjectionMatrix();
 
@@ -107,7 +107,7 @@ export function PadEyeCanvas({ padEye }) {
         }
       });
     };
-  }, [padEye]);
+  }, [isDark, padEye]);
 
   return (
     <section className="overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-xl">
@@ -119,7 +119,12 @@ export function PadEyeCanvas({ padEye }) {
       </div>
       <div
         ref={canvasRef}
-        className="h-150 w-full bg-[radial-gradient(circle_at_top,#f8fafc,#e2e8f0_55%,#cbd5e1)],_#f8fafc,_#e2e8f0_55%,_#cbd5e1)]"
+        className="h-150 w-full"
+        style={{
+          background: isDark
+            ? "radial-gradient(circle at top, #26313b, #19222b 58%, #11171d)"
+            : "radial-gradient(circle at top, #f8fafc, #e2e8f0 55%, #cbd5e1)",
+        }}
       />
     </section>
   );
