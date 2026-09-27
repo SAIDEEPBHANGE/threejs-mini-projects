@@ -44,10 +44,6 @@ export function PadEyeCanvas({ padEye }) {
     fillLight.position.set(-180, 120, -160);
     scene.add(fillLight);
 
-    const grid = new THREE.GridHelper(600, 24, 0x94a3b8, 0xcbd5e1);
-    grid.position.y = -70;
-    scene.add(grid);
-
     const padEyeGroup = buildPadEyeModel(padEye);
     scene.add(padEyeGroup);
 

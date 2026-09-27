@@ -21,14 +21,35 @@ function getTangentPoint(pointX, pointY, centerX, centerY, radius, side) {
   );
 }
 
-function getMainPlateTangents(mainPlate) {
+function getBaseExtensions(mainPlate, stiffeners = []) {
+  const extensions = { left: 0, right: 0 };
+
+  stiffeners.forEach((stiffener) => {
+    const side = stiffener.position;
+    if (side !== "left" && side !== "right") return;
+
+    const baseWidth = Number(mainPlate[`${side}Width`]) || 0;
+    const offset = Number(stiffener.offset) || 0;
+    const halfThickness = Math.max(0, Number(stiffener.thickness) || 0) / 2;
+    if (Math.abs(offset - baseWidth) > halfThickness) return;
+
+    extensions[side] = Math.max(
+      extensions[side],
+      Math.max(0, Number(stiffener.height) || 0),
+    );
+  });
+
+  return extensions;
+}
+
+function getMainPlateTangents(mainPlate, extensions = { left: 0, right: 0 }) {
   const plateHeight = Number(mainPlate.height) || 0;
   const radius = Number(mainPlate.outerRadius) || 0;
 
   return {
     left: getTangentPoint(
       -(Number(mainPlate.leftWidth) || 0),
-      0,
+      extensions.left,
       0,
       plateHeight,
       radius,
@@ -36,7 +57,7 @@ function getMainPlateTangents(mainPlate) {
     ),
     right: getTangentPoint(
       Number(mainPlate.rightWidth) || 0,
-      0,
+      extensions.right,
       0,
       plateHeight,
       radius,
@@ -45,22 +66,36 @@ function getMainPlateTangents(mainPlate) {
   };
 }
 
-function getMainPlateHeightAtX(mainPlate, x) {
+function getMainPlateHeightAtX(
+  mainPlate,
+  x,
+  extensions = { left: 0, right: 0 },
+) {
   const plateHeight = Number(mainPlate.height) || 0;
   const leftWidth = Number(mainPlate.leftWidth) || 0;
   const rightWidth = Number(mainPlate.rightWidth) || 0;
   const radius = Number(mainPlate.outerRadius) || 0;
-  const { left: leftTangent, right: rightTangent } =
-    getMainPlateTangents(mainPlate);
+  const { left: leftTangent, right: rightTangent } = getMainPlateTangents(
+    mainPlate,
+    extensions,
+  );
 
   if (x < leftTangent.x) {
     if (x < -leftWidth || leftTangent.x === -leftWidth) return 0;
-    return ((x + leftWidth) / (leftTangent.x + leftWidth)) * leftTangent.y;
+    return (
+      extensions.left +
+      ((x + leftWidth) / (leftTangent.x + leftWidth)) *
+        (leftTangent.y - extensions.left)
+    );
   }
 
   if (x > rightTangent.x) {
     if (x > rightWidth || rightWidth === rightTangent.x) return 0;
-    return ((rightWidth - x) / (rightWidth - rightTangent.x)) * rightTangent.y;
+    return (
+      extensions.right +
+      ((rightWidth - x) / (rightWidth - rightTangent.x)) *
+        (rightTangent.y - extensions.right)
+    );
   }
 
   return plateHeight + Math.sqrt(Math.max(0, radius ** 2 - x ** 2));
@@ -99,22 +134,27 @@ function createShapeFromPoints(points) {
   return shape;
 }
 
-export function createMainPlateGeometry(mainPlate) {
+export function createMainPlateGeometry(mainPlate, stiffeners = []) {
   const shape = new THREE.Shape();
   const leftWidth = Number(mainPlate.leftWidth) || 0;
   const rightWidth = Number(mainPlate.rightWidth) || 0;
   const radius = Number(mainPlate.outerRadius) || 0;
   const plateHeight = Number(mainPlate.height) || radius || 60;
   const holeRadius = (Number(mainPlate.holeDiameter) || 0) / 2;
-  const { left: leftTangent, right: rightTangent } =
-    getMainPlateTangents(mainPlate);
+  const extensions = getBaseExtensions(mainPlate, stiffeners);
+  const { left: leftTangent, right: rightTangent } = getMainPlateTangents(
+    mainPlate,
+    extensions,
+  );
   const startAngle = Math.atan2(leftTangent.y - plateHeight, leftTangent.x);
   const endAngle = Math.atan2(rightTangent.y - plateHeight, rightTangent.x);
 
   shape.moveTo(-leftWidth, 0);
+  if (extensions.left > 0) shape.lineTo(-leftWidth, extensions.left);
   shape.lineTo(leftTangent.x, leftTangent.y);
   shape.absarc(0, plateHeight, radius, startAngle, endAngle, true);
-  shape.lineTo(rightWidth, 0);
+  shape.lineTo(rightWidth, extensions.right);
+  if (extensions.right > 0) shape.lineTo(rightWidth, 0);
   shape.closePath();
 
   const holePath = new THREE.Path();
@@ -161,7 +201,7 @@ export function buildPadEyeModel(padEye) {
   });
 
   const mainPlateMesh = new THREE.Mesh(
-    createMainPlateGeometry(padEye.mainPlate),
+    createMainPlateGeometry(padEye.mainPlate, padEye.stiffeners),
     mainPlateMaterial,
   );
   group.add(mainPlateMesh);
@@ -215,13 +255,33 @@ export function buildPadEyeModel(padEye) {
     const bottomSize = Math.max(0, Number(stiffener.bottomSize) || 0);
     const thickness = Math.max(0, Number(stiffener.thickness) || 0);
     const halfThickness = thickness / 2;
-    const height = Math.max(
+    const extensions = getBaseExtensions(padEye.mainPlate, padEye.stiffeners);
+    const baseWidth =
+      stiffener.position === "left"
+        ? Number(padEye.mainPlate.leftWidth)
+        : stiffener.position === "right"
+          ? Number(padEye.mainPlate.rightWidth)
+          : null;
+    const isAtMainPlateBase =
+      baseWidth !== null && Math.abs(offset - baseWidth) <= halfThickness;
+    const outlineHeight = Math.max(
       0,
       Math.min(
-        getMainPlateHeightAtX(padEye.mainPlate, positionX - halfThickness),
-        getMainPlateHeightAtX(padEye.mainPlate, positionX + halfThickness),
+        getMainPlateHeightAtX(
+          padEye.mainPlate,
+          positionX - halfThickness,
+          extensions,
+        ),
+        getMainPlateHeightAtX(
+          padEye.mainPlate,
+          positionX + halfThickness,
+          extensions,
+        ),
       ),
     );
+    const height = isAtMainPlateBase
+      ? Math.max(0, Number(stiffener.height) || 0)
+      : outlineHeight;
     const shape = new THREE.Shape();
 
     shape.moveTo(0, 0);
@@ -229,7 +289,16 @@ export function buildPadEyeModel(padEye) {
     if (stiffener.type === "curved") {
       const radius = Math.max(0, Number(stiffener.bottomRadius) || 0);
       if (radius > 0) {
-        shape.absarc(0, -radius, radius, Math.PI / 2, 0, true);
+        const tangent = getTangentPoint(
+          topSize,
+          height,
+          0,
+          -radius,
+          radius,
+          -1,
+        );
+        const tangentAngle = Math.atan2(tangent.y + radius, tangent.x);
+        shape.absarc(0, -radius, radius, Math.PI / 2, tangentAngle, true);
         shape.lineTo(topSize, height);
       } else {
         shape.lineTo(topSize, 0);
