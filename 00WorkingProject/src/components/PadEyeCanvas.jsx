@@ -1,7 +1,7 @@
 import { useEffect, useRef } from "react";
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
-import { buildPadEyeModel } from "../utils/padEyeGeometry";
+import { buildPadEyeModel } from "../geometry/index.js";
 
 export function PadEyeCanvas({ padEye, isDark }) {
   const canvasRef = useRef(null);
