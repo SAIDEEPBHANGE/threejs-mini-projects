@@ -1,4 +1,5 @@
 import * as THREE from "three";
+import { createPadEyeDimensions } from "./padEyeDimensions.js";
 
 function getTangentPoint(pointX, pointY, centerX, centerY, radius, side) {
   const offsetX = pointX - centerX;
@@ -348,5 +349,6 @@ export function buildPadEyeModel(padEye) {
     });
   });
 
+  group.add(createPadEyeDimensions(padEye));
   return group;
 }

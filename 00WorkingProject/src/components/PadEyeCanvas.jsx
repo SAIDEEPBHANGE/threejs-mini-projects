@@ -96,8 +96,12 @@ export function PadEyeCanvas({ padEye }) {
         }
         if (child.material) {
           if (Array.isArray(child.material)) {
-            child.material.forEach((material) => material.dispose());
+            child.material.forEach((material) => {
+              material.map?.dispose();
+              material.dispose();
+            });
           } else {
+            child.material.map?.dispose();
             child.material.dispose();
           }
         }
