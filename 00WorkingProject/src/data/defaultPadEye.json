@@ -11,7 +11,9 @@
   },
   "cheekPlates": [
     { "id": "CP-01", "radius": 115, "thickness": 20 },
-    { "id": "CP-02", "radius": 115, "thickness": 20 }
+    { "id": "CP-02", "radius": 115, "thickness": 20 },
+    { "id": "CP-03", "radius": 115, "thickness": 20 },
+    { "id": "CP-04", "radius": 115, "thickness": 20 }
   ],
   "stiffeners": [
     {
@@ -26,10 +28,29 @@
     },
     {
       "id": "ST-02",
+      "type": "flat",
+      "position": "right",
+      "thickness": 10,
+      "offset": 200,
+      "topSize": 30,
+      "bottomSize": 30,
+      "bottomRadius": 0
+    },
+    {
+      "id": "ST-03",
       "type": "curved",
       "position": "right",
       "thickness": 12,
-      "offset": 40,
+      "offset": 150,
+      "topSize": 0,
+      "bottomRadius": 50
+    },
+    {
+      "id": "ST-03",
+      "type": "curved",
+      "position": "left",
+      "thickness": 12,
+      "offset": 150,
       "topSize": 0,
       "bottomRadius": 50
     },
@@ -38,15 +59,35 @@
       "type": "angled",
       "position": "left",
       "thickness": 10,
-      "offset": 0,
+      "offset": 175,
       "topSize": 0,
       "bottomSize": 150,
       "bottomRadius": 0
     },
     {
       "id": "ST-04",
+      "type": "angled",
+      "position": "right",
+      "thickness": 10,
+      "offset": 175,
+      "topSize": 0,
+      "bottomSize": 150,
+      "bottomRadius": 0
+    },
+    {
+      "id": "ST-05",
       "type": "flat",
       "position": "left",
+      "thickness": 10,
+      "offset": 245,
+      "topSize": 30,
+      "bottomSize": 30,
+      "bottomRadius": 0
+    },
+    {
+      "id": "ST-06",
+      "type": "flat",
+      "position": "right",
       "thickness": 10,
       "offset": 245,
       "topSize": 30,

@@ -85,7 +85,7 @@ export function PadEyeForm({
             <button
               type="button"
               onClick={addCheekPlate}
-              disabled={totalCheekPlates >= 2}
+              disabled={totalCheekPlates >= 4}
               className="rounded-lg bg-sky-600 px-3 py-1.5 text-sm font-medium text-white transition hover:bg-sky-500 disabled:cursor-not-allowed disabled:bg-slate-300"
             >
               Add

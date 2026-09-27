@@ -184,11 +184,21 @@ export function buildPadEyeModel(padEye) {
     });
     cheekGeometry.translate(0, 0, -cheekThickness / 2);
 
+    const side = index % 2 === 0 ? 1 : -1;
+    const previousPlateThickness = padEye.cheekPlates
+      .slice(0, index)
+      .reduce(
+        (total, cheek, cheekIndex) =>
+          cheekIndex % 2 === index % 2
+            ? total + (Number(cheek.thickness) || 10)
+            : total,
+        0,
+      );
     const cheekPlate = new THREE.Mesh(cheekGeometry, accentMaterial);
     cheekPlate.position.set(
       0,
       Number(padEye.mainPlate.height) || 0,
-      ((index === 0 ? 1 : -1) * (mainThickness + cheekThickness)) / 2,
+      side * (mainThickness / 2 + previousPlateThickness + cheekThickness / 2),
     );
     group.add(cheekPlate);
   });

@@ -57,6 +57,9 @@ export function PadEyeCanvas({ padEye }) {
     const maxDimension = Math.max(size.x, size.y, size.z, 1);
     const distance =
       maxDimension / (2 * Math.tan((camera.fov * Math.PI) / 360)) + 90;
+    controls.maxDistance = Math.max(900, distance * 20);
+    camera.far = Math.max(10000, maxDimension * 100);
+    camera.updateProjectionMatrix();
 
     camera.position.set(
       center.x + distance * 0.9,
@@ -116,7 +119,7 @@ export function PadEyeCanvas({ padEye }) {
       </div>
       <div
         ref={canvasRef}
-        className="h-[720px] w-full bg-[radial-gradient(circle_at_top,_#f8fafc,_#e2e8f0_55%,_#cbd5e1)]"
+        className="h-150 w-full bg-[radial-gradient(circle_at_top,#f8fafc,#e2e8f0_55%,#cbd5e1)],_#f8fafc,_#e2e8f0_55%,_#cbd5e1)]"
       />
     </section>
   );

@@ -31,7 +31,7 @@ export function usePadEyeState() {
 
   const addCheekPlate = () => {
     setPadEye((current) => {
-      if (current.cheekPlates.length >= 2) return current;
+      if (current.cheekPlates.length >= 4) return current;
       return {
         ...current,
         cheekPlates: [
