@@ -1,0 +1,14 @@
+{
+  "id": "PE-TEST-PLATE-ONLY",
+  "units": "mm",
+  "mainPlate": {
+    "thickness": 20,
+    "height": 280,
+    "leftWidth": 175,
+    "rightWidth": 175,
+    "outerRadius": 100,
+    "holeDiameter": 50
+  },
+  "cheekPlates": [],
+  "stiffeners": []
+}

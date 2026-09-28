@@ -1,0 +1,35 @@
+{
+  "id": "PE-TEST-ASYMMETRIC",
+  "units": "mm",
+  "mainPlate": {
+    "thickness": 32,
+    "height": 300,
+    "leftWidth": 170,
+    "rightWidth": 230,
+    "outerRadius": 120,
+    "holeDiameter": 70
+  },
+  "cheekPlates": [],
+  "stiffeners": [
+    {
+      "id": "ST-ASYM-LEFT",
+      "type": "flat",
+      "position": "left",
+      "thickness": 10,
+      "offset": 140,
+      "topSize": 30,
+      "bottomSize": 75,
+      "bottomRadius": 0
+    },
+    {
+      "id": "ST-ASYM-RIGHT",
+      "type": "angled",
+      "position": "right",
+      "thickness": 12,
+      "offset": 190,
+      "topSize": 35,
+      "bottomSize": 95,
+      "bottomRadius": 0
+    }
+  ]
+}

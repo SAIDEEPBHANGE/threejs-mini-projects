@@ -1,0 +1,24 @@
+{
+  "id": "PE-TEST-CURVE",
+  "units": "mm",
+  "mainPlate": {
+    "thickness": 30,
+    "height": 320,
+    "leftWidth": 180,
+    "rightWidth": 180,
+    "outerRadius": 130,
+    "holeDiameter": 70
+  },
+  "cheekPlates": [],
+  "stiffeners": [
+    {
+      "id": "ST-CURVE-01",
+      "type": "curved",
+      "position": "right",
+      "thickness": 12,
+      "offset": 120,
+      "topSize": 55,
+      "bottomRadius": 45
+    }
+  ]
+}

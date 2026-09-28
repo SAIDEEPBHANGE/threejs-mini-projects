@@ -1,0 +1,78 @@
+{
+  "id": "PE-003",
+  "units": "mm",
+  "mainPlate": {
+    "thickness": 40,
+    "height": 500,
+    "leftWidth": 300,
+    "rightWidth": 300,
+    "outerRadius": 200,
+    "holeDiameter": 110
+  },
+  "cheekPlates": [
+    { "id": "CP-01", "radius": 155, "thickness": 25 },
+    { "id": "CP-02", "radius": 155, "thickness": 25 },
+    { "id": "CP-03", "radius": 155, "thickness": 25 },
+    { "id": "CP-04", "radius": 155, "thickness": 25 }
+  ],
+  "stiffeners": [
+    {
+      "id": "ST-01",
+      "type": "flat",
+      "position": "left",
+      "thickness": 15,
+      "offset": 250,
+      "topSize": 45,
+      "bottomSize": 45,
+      "bottomRadius": 0
+    },
+    {
+      "id": "ST-02",
+      "type": "flat",
+      "position": "right",
+      "thickness": 15,
+      "offset": 250,
+      "topSize": 45,
+      "bottomSize": 45,
+      "bottomRadius": 0
+    },
+    {
+      "id": "ST-03",
+      "type": "curved",
+      "position": "left",
+      "thickness": 16,
+      "offset": 200,
+      "topSize": 0,
+      "bottomRadius": 200
+    },
+    {
+      "id": "ST-04",
+      "type": "curved",
+      "position": "right",
+      "thickness": 16,
+      "offset": 200,
+      "topSize": 0,
+      "bottomRadius": 200
+    },
+    {
+      "id": "ST-05",
+      "type": "angled",
+      "position": "left",
+      "thickness": 12,
+      "offset": 225,
+      "topSize": 0,
+      "bottomSize": 180,
+      "bottomRadius": 0
+    },
+    {
+      "id": "ST-06",
+      "type": "angled",
+      "position": "right",
+      "thickness": 12,
+      "offset": 225,
+      "topSize": 0,
+      "bottomSize": 180,
+      "bottomRadius": 0
+    }
+  ]
+}

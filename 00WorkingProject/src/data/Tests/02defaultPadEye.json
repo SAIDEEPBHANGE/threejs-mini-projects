@@ -1,0 +1,56 @@
+{
+  "id": "PE-002",
+  "units": "mm",
+  "mainPlate": {
+    "thickness": 25,
+    "height": 320,
+    "leftWidth": 200,
+    "rightWidth": 200,
+    "outerRadius": 120,
+    "holeDiameter": 60
+  },
+  "cheekPlates": [
+    { "id": "CP-01", "radius": 90, "thickness": 16 },
+    { "id": "CP-02", "radius": 90, "thickness": 16 }
+  ],
+  "stiffeners": [
+    {
+      "id": "ST-01",
+      "type": "flat",
+      "position": "left",
+      "thickness": 8,
+      "offset": 170,
+      "topSize": 25,
+      "bottomSize": 25,
+      "bottomRadius": 0
+    },
+    {
+      "id": "ST-02",
+      "type": "flat",
+      "position": "right",
+      "thickness": 8,
+      "offset": 170,
+      "topSize": 25,
+      "bottomSize": 25,
+      "bottomRadius": 0
+    },
+    {
+      "id": "ST-03",
+      "type": "curved",
+      "position": "left",
+      "thickness": 10,
+      "offset": 125,
+      "topSize": 0,
+      "bottomRadius": 120
+    },
+    {
+      "id": "ST-04",
+      "type": "curved",
+      "position": "right",
+      "thickness": 10,
+      "offset": 125,
+      "topSize": 0,
+      "bottomRadius": 120
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "id": "PE-TEST-CHEEK-STACK",
+  "units": "mm",
+  "mainPlate": {
+    "thickness": 30,
+    "height": 360,
+    "leftWidth": 220,
+    "rightWidth": 220,
+    "outerRadius": 140,
+    "holeDiameter": 75
+  },
+  "cheekPlates": [
+    { "id": "CP-LEFT-INNER", "radius": 100, "thickness": 12 },
+    { "id": "CP-RIGHT-INNER", "radius": 105, "thickness": 18 },
+    { "id": "CP-LEFT-OUTER", "radius": 110, "thickness": 9 },
+    { "id": "CP-RIGHT-OUTER", "radius": 115, "thickness": 24 }
+  ],
+  "stiffeners": []
+}

@@ -1,0 +1,25 @@
+{
+  "id": "PE-TEST-HOLE",
+  "units": "mm",
+  "mainPlate": {
+    "thickness": 30,
+    "height": 220,
+    "leftWidth": 160,
+    "rightWidth": 160,
+    "outerRadius": 100,
+    "holeDiameter": 80
+  },
+  "cheekPlates": [],
+  "stiffeners": [
+    {
+      "id": "ST-HOLE-01",
+      "type": "angled",
+      "position": "center",
+      "thickness": 24,
+      "offset": 0,
+      "topSize": 40,
+      "bottomSize": 90,
+      "bottomRadius": 0
+    }
+  ]
+}
