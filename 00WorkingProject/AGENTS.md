@@ -18,7 +18,9 @@ These instructions apply to `00WorkingProject`. Preserve the engineering behavio
 
 - The main plate's 2D profile is in the XY plane. X is width, Y is height, and Z is plate depth/thickness.
 - `mainPlate.height` is the Y coordinate of the upper-circle center and the hole center, not the uppermost plate height. The unextended uppermost point is `height + outerRadius`.
-- `leftShoulderHeight` and `rightShoulderHeight` independently raise the corresponding base corner before the tangent is calculated. Zero preserves the baseline endpoint; positive values create a vertical shoulder followed by a recomputed tangent to the unchanged upper circle.
+- `mainPlate.leftShoulderHeight` and `mainPlate.rightShoulderHeight` are independent user inputs exposed by the Main Plate form. Both default to zero in starter/test data; missing or nonpositive values must behave as zero.
+- A zero shoulder height keeps its base endpoint on `y = 0` (the ordinary pointy/tangent profile). A positive value raises only that side's endpoint vertically to `( -leftWidth, leftShoulderHeight )` or `( rightWidth, rightShoulderHeight )`, then draws a recomputed true tangent from that raised endpoint to the existing upper circle.
+- Shoulder height does not change `mainPlate.height`, the upper-circle center, or the pin-hole center. Do not translate or resize the crown to implement a shoulder.
 - Main-plate thickness is extruded symmetrically around `z = 0`.
 - Cheek plates are circular XY profiles at the same hole center, extruded along Z and positioned outside the main plate.
 - Stiffener profiles are drawn in a local width/height plane, extruded by stiffener thickness, rotated onto the main-plate faces, and attached at `z = +/- mainPlate.thickness / 2`.
@@ -34,6 +36,8 @@ The owning code is `src/geometry/calculations/tangent.js`, `src/geometry/calcula
 - `getMainPlateHeightAtX` returns the tangent-line height outside the tangent points and the upper circle height `height + sqrt(radius^2 - x^2)` over the arc. Keep the tangent and arc profile consistent with `createMainPlateGeometry`.
 - `getBaseExtensions` starts with each configured shoulder height, then takes the maximum with any endpoint stiffener height on that side. The corresponding base corner rises to the resulting height; recalculate its tangent to the unchanged upper circle.
 - A stiffener is considered attached to a side's last base point when its left/right offset is within half its thickness of that side's width: `abs(offset - baseWidth) <= thickness / 2`.
+- When adding or renaming shoulder inputs, update the form, active model data, profile calculation, dimension callouts, and focused fixture together. The dimension callout should show a shoulder-height dimension only when that side's resulting configured shoulder height is positive.
+- `src/data/Tests/11-shoulder-heights.json` covers unequal left/right shoulder values and endpoint stiffeners whose heights are respectively above and below their shoulder values. The visible extension on each side must be the maximum of those inputs, and both tangent lines must remain tangent to the original crown circle.
 
 ## Cheek Plates
 
