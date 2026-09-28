@@ -1,266 +1,98 @@
-# Pad Eye Design Project
+# Pad Eye Design Tool
 
-## Tech Stack
+A browser-based engineering configurator for building a pad-eye plate assembly and inspecting its dimensions in a live Three.js viewport.
 
-- React JS
-- Tailwind CSS
-- Three.js / React Three Fiber
+## Technology
 
-## UI Layout
+- React 19 and Vite
+- Three.js with `OrbitControls` (direct Three.js; not React Three Fiber)
+- Tailwind CSS 4
 
-- **Two-column responsive layout**
-  - **Left panel:**
-    - Three.js 3D canvas
-    - Dynamic pad eye model preview
-    - Orbit controls
-    - Auto-fit camera / bounding box utility
-  - **Right panel:**
-    - Scrollable engineering dimension form
-    - Main plate configuration
-    - Cheek plate configuration (0–2 items)
-    - Dynamic stiffener configuration (field array: add, edit, duplicate, remove)
-- Form updates feed the single source of truth and update the Three.js model in real time.
-- The form panel is vertically scrollable for longer engineering configurations.
-- Main plate and cheek plate faces remain aligned and perpendicular to the design plane for consistent modeling.
+## Run Locally
 
----
-
-## Pad Eye Dimension Form
-
-### General
-
-| Input      | Description                                 |
-| :--------- | :------------------------------------------ |
-| Pad Eye ID | Unique identification name or reference tag |
-
-### Main Plate
-
-| Input                         | Description                             |
-| :---------------------------- | :-------------------------------------- |
-| Main Plate Thickness ($t$)    | Total plate thickness                   |
-| Main Plate Height ($h$)       | Full plate height from base to top      |
-| Main Plate Left Width ($lw$)  | Distance from center axis to left edge  |
-| Main Plate Right Width ($rw$) | Distance from center axis to right edge |
-| Main Plate Outer Radius ($R$) | Upper profile radius                    |
-| Hole Diameter ($D$)           | Pin/shackle hole clearance diameter     |
-
-### Cheek Plates
-
-| Input                         | Description                               |
-| :---------------------------- | :---------------------------------------- |
-| Cheek Plate Quantity          | Allowed range: 0 to 2                     |
-| Cheek Plate Radius ($R_c$)    | Outer radius of reinforcement cheek plate |
-| Cheek Plate Thickness ($t_c$) | Plate thickness per cheek plate           |
-
-### Stiffeners
-
-| Input                           | Description                          |
-| :------------------------------ | :----------------------------------- |
-| Stiffener Quantity              | Dynamic array (no hard limit)        |
-| Stiffener Type                  | `flat`, `angled`, or `curved`        |
-| Stiffener Position              | `center`, `left`, or `right`         |
-| Stiffener Thickness ($t_s$)     | Thickness of the stiffener plate     |
-| Stiffener Position Offset       | Lateral offset from center axis      |
-| Top Stiffener Size              | Top edge dimension                   |
-| Bottom Stiffener Size           | Base edge dimension                  |
-| Bottom Stiffener Radius ($R_s$) | Corner fillet/radius on base section |
-
----
-
-## Data Model (Single Source of Truth)
-
-The engineering object holds raw user inputs. Stiffeners are stored as fully self-contained objects to allow standard dynamic field array handling (`useFieldArray`).
-
-```json
-{
-  "padEye": {
-    "id": "PE-001",
-    "units": "mm",
-    "mainPlate": {
-      "thickness": 20,
-      "leftWidth": 100,
-      "rightWidth": 100,
-      "outerRadius": 150,
-      "holeDiameter": 60
-    },
-    "cheekPlates": [
-      {
-        "id": "CP-01",
-        "radius": 100,
-        "thickness": 10
-      },
-      {
-        "id": "CP-02",
-        "radius": 100,
-        "thickness": 10
-      }
-    ],
-    "stiffeners": [
-      {
-        "id": "ST-01",
-        "type": "flat",
-        "position": "left",
-        "thickness": 10,
-        "offset": 40,
-        "topSize": 80,
-        "bottomSize": 100,
-        "bottomRadius": 0
-      },
-      {
-        "id": "ST-02",
-        "type": "curved",
-        "position": "right",
-        "thickness": 12,
-        "offset": 40,
-        "topSize": 80,
-        "bottomSize": 100,
-        "bottomRadius": 50
-      }
-    ]
-  }
-}
+```bash
+npm install
+npm run dev
 ```
 
----
+Useful checks:
 
-## Data Flow & Architecture
+```bash
+npm run lint
+npm run build
+```
+
+## Features
+
+- Responsive layout with a scrollable engineering form and interactive 3D preview.
+- Live model updates as form values change.
+- Orbit controls, automatic camera fit, and a model-scaled zoom-out limit.
+- Light/dark theme toggle; the selection is stored in local storage.
+- 3D callouts for main-plate dimensions and cheek/stiffener values.
+- Main plate has tangent side connections to its circular upper profile and a centered pin hole.
+- Cheek plates share the main hole center. Up to four can be configured, stacked two per face.
+- Stiffeners support flat, angled, and curved profiles. They are placed on both main-plate faces, derive height from the plate outline, and are split around the hole when needed.
+- Endpoint stiffeners can define a base height; the main-plate base and tangent-to-arc outline extend to match.
+
+## Engineering Inputs
+
+| Section        | Inputs and behavior                                                                                                                                                        |
+| :------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| General        | Pad-eye ID and units. The supplied defaults use millimeters.                                                                                                               |
+| Main plate     | Thickness, arc-center height, left/right base widths, outer radius, and hole diameter. The hole center is at the arc center. The uppermost point is at height plus radius. |
+| Cheek plates   | Zero to four plates total, distributed two per face. Each plate has an outer radius and thickness; its inner hole matches the main-plate hole.                             |
+| Stiffeners     | Unlimited dynamic list with type, side/center position, offset, thickness, and top size. Flat and angled profiles also use bottom size; curved profiles use bottom radius. |
+| Base stiffener | When a left/right stiffener reaches the corresponding main-plate base edge, a Base Height input is shown and the main-plate side extends to that height.                   |
+
+## Project Structure
 
 ```text
-Engineering Form State (Single Source of Truth)
-                    │
-                    ▼
-       Geometry Transformation Utility
-       (calculatePadEyeDrawSpec)
-                    │
-                    ▼
-        Render Manifest JSON (Draw Spec)
-                    │
-                    ▼
-Three.js Meshes (Extrusions, Cylinders, Transforms)
-                    │
-                    ▼
-             3D Viewport / Canvas
-
+src/
+  components/       React form, reusable fields, and Three.js canvas
+  data/             Default pad-eye JSON
+  dimensions/
+    calculations/   Dimension callout layout and component labels
+    draw/           Three.js lines, label sprites, and dimension drawing
+  geometry/
+    calculations/   Tangents, profiles, stiffener placement, and hole clipping
+    draw/           Main plate, cheek plate, and stiffener mesh construction
+    buildPadEyeModel.js
+    materials.js
+  hooks/             Pad-eye form state and update operations
 ```
 
----
+## Function Flow
 
-## Three.js Render Manifest JSON (`padEyeDrawSpec.json`)
-
-This derived representation translates engineering parameters into explicit geometric paths, extrusions, matrix transformations, and bounding dimensions for consumption by Three.js or React Three Fiber.
-
-```json
-{
-  "units": "mm",
-  "meta": {
-    "padEyeId": "PE-001",
-    "boundingBox": {
-      "width": 200,
-      "height": 270,
-      "depth": 60
-    }
-  },
-  "meshes": [
-    {
-      "name": "mainPlate",
-      "geometryType": "ExtrudeGeometry",
-      "material": "steelMatte",
-      "transform": {
-        "position": [0, 0, -10],
-        "rotation": [0, 0, 0]
-      },
-      "shapeDefinition": {
-        "path": [
-          { "type": "moveTo", "x": -100, "y": 0 },
-          { "type": "lineTo", "x": -100, "y": 120 },
-          {
-            "type": "absarc",
-            "x": 0,
-            "y": 120,
-            "radius": 150,
-            "startAngle": 3.14159,
-            "endAngle": 0,
-            "clockwise": true
-          },
-          { "type": "lineTo", "x": 100, "y": 0 },
-          { "type": "closePath" }
-        ],
-        "holes": [
-          {
-            "type": "absarc",
-            "x": 0,
-            "y": 120,
-            "radius": 30,
-            "startAngle": 0,
-            "endAngle": 6.28318,
-            "clockwise": false
-          }
-        ]
-      },
-      "extrudeSettings": {
-        "depth": 20,
-        "bevelEnabled": true,
-        "bevelSegments": 2,
-        "steps": 1,
-        "bevelSize": 1,
-        "bevelThickness": 1
-      }
-    },
-    {
-      "name": "cheekPlate_CP-01",
-      "geometryType": "CylinderGeometry",
-      "material": "steelBrushed",
-      "transform": {
-        "position": [0, 120, 15],
-        "rotation": [1.5708, 0, 0]
-      },
-      "parameters": {
-        "radiusTop": 100,
-        "radiusBottom": 100,
-        "height": 10,
-        "radialSegments": 48,
-        "innerHoleRadius": 30
-      }
-    },
-    {
-      "name": "cheekPlate_CP-02",
-      "geometryType": "CylinderGeometry",
-      "material": "steelBrushed",
-      "transform": {
-        "position": [0, 120, -15],
-        "rotation": [1.5708, 0, 0]
-      },
-      "parameters": {
-        "radiusTop": 100,
-        "radiusBottom": 100,
-        "height": 10,
-        "radialSegments": 48,
-        "innerHoleRadius": 30
-      }
-    },
-    {
-      "name": "stiffener_ST-01",
-      "geometryType": "ExtrudeGeometry",
-      "material": "steelMatte",
-      "transform": {
-        "position": [-40, 0, 10],
-        "rotation": [0, 1.5708, 0]
-      },
-      "shapeDefinition": {
-        "path": [
-          { "type": "moveTo", "x": 0, "y": 0 },
-          { "type": "lineTo", "x": 100, "y": 0 },
-          { "type": "lineTo", "x": 80, "y": 80 },
-          { "type": "lineTo", "x": 0, "y": 80 },
-          { "type": "closePath" }
-        ],
-        "holes": []
-      },
-      "extrudeSettings": {
-        "depth": 10,
-        "bevelEnabled": false
-      }
-    }
-  ]
-}
+```mermaid
+flowchart TD
+    User[User edits form or theme] --> Form[PadEyeForm / App]
+    Form --> State[usePadEyeState]
+    State -->|updated padEye| App[App]
+    App --> Canvas[PadEyeCanvas]
+    App --> Form
+    Canvas -->|padEye| Builder[buildPadEyeModel]
+    Builder --> Main[createMainPlateGeometry]
+    Main --> Profile[mainPlateProfile and tangent calculations]
+    Builder --> Cheek[createCheekPlateMesh]
+    Builder --> Rib[createStiffenerMeshes]
+    Rib --> Place[calculateStiffenerPlacement]
+    Rib --> Shape[createStiffenerProfile]
+    Rib --> Hole[splitProfileAroundHole]
+    Builder --> Layout[calculatePadEyeDimensionLayout]
+    Layout --> Callouts[calculateMainPlateDimensionCallouts]
+    Layout --> Labels[calculateComponentLabels]
+    Callouts --> DimensionDraw[createPadEyeDimensionDrawing]
+    Labels --> DimensionDraw
+    Main --> Model[Three.js meshes and dimension annotations]
+    Cheek --> Model
+    Hole --> Model
+    DimensionDraw --> Model
+    Model --> Scene[Three.js scene, camera, and OrbitControls]
+    Scene --> Renderer[WebGLRenderer]
 ```
+
+## State and Geometry
+
+`src/data/defaultPadEye.json` provides the initial engineering values. `usePadEyeState` owns the editable pad-eye object and immutable update operations. `PadEyeCanvas` rebuilds and renders the Three.js model from that state.
+
+Geometry calculations are kept separate from mesh drawing. Dimension layout calculations are likewise separate from the code that draws Three.js lines and text sprites. The project does not generate a separate render-manifest JSON file.
