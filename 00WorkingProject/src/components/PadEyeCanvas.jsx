@@ -50,6 +50,33 @@ export function PadEyeCanvas({ padEye }) {
     const viewHelper = new ViewHelper(camera, renderer.domElement);
     viewHelper.location.top = 16;
     viewHelper.location.right = 16;
+    const negativeAxisColors = {
+      negX: 0xff4466,
+      negY: 0x88ff44,
+      negZ: 0x4488ff,
+    };
+    viewHelper.children.forEach((axisPoint) => {
+      const color = negativeAxisColors[axisPoint.userData.type];
+      if (color === undefined) return;
+
+      axisPoint.material = axisPoint.material.clone();
+      const markerCanvas = document.createElement("canvas");
+      markerCanvas.width = 64;
+      markerCanvas.height = 64;
+      const markerContext = markerCanvas.getContext("2d");
+      markerContext.beginPath();
+      markerContext.arc(32, 32, 14, 0, Math.PI * 2);
+      markerContext.fillStyle = `#${color.toString(16).padStart(6, "0")}`;
+      markerContext.fill();
+
+      const markerTexture = new THREE.CanvasTexture(markerCanvas);
+      markerTexture.colorSpace = THREE.SRGBColorSpace;
+      axisPoint.material.map = markerTexture;
+      axisPoint.material.color.setHex(0xffffff);
+      axisPoint.material.opacity = 0.55;
+      axisPoint.material.transparent = true;
+      axisPoint.material.needsUpdate = true;
+    });
 
     const ambientLight = new THREE.AmbientLight(0xffffff, 1.35);
     scene.add(ambientLight);
