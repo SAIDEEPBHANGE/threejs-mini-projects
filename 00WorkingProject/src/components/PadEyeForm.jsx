@@ -74,9 +74,21 @@ export function PadEyeForm({
               onChange={(value) => updateMainPlate("leftWidth", value)}
             />
             <Field
+              label="Left Shoulder Height"
+              value={padEye.mainPlate.leftShoulderHeight ?? 0}
+              onChange={(value) => updateMainPlate("leftShoulderHeight", value)}
+            />
+            <Field
               label="Right Width (rw)"
               value={padEye.mainPlate.rightWidth}
               onChange={(value) => updateMainPlate("rightWidth", value)}
+            />
+            <Field
+              label="Right Shoulder Height"
+              value={padEye.mainPlate.rightShoulderHeight ?? 0}
+              onChange={(value) =>
+                updateMainPlate("rightShoulderHeight", value)
+              }
             />
             <Field
               label="Outer Radius (R)"

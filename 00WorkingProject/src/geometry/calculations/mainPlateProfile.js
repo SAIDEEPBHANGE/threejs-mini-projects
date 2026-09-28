@@ -2,7 +2,10 @@
 import { getMainPlateTangents } from "./tangent.js";
 
 export function getBaseExtensions(mainPlate, stiffeners = []) {
-  const extensions = { left: 0, right: 0 };
+  const extensions = {
+    left: Math.max(0, Number(mainPlate.leftShoulderHeight) || 0),
+    right: Math.max(0, Number(mainPlate.rightShoulderHeight) || 0),
+  };
 
   stiffeners.forEach((stiffener) => {
     const side = stiffener.position;

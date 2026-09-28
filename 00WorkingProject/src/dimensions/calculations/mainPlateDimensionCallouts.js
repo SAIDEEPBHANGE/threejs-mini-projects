@@ -19,6 +19,32 @@ export function calculateMainPlateDimensionCallouts(
   const maxWidth = Math.max(leftWidth, rightWidth);
   const topY = plateHeight + radius;
   const point = (x, y, z = frontZ) => [x, y, z];
+  const shoulderDimensions = [
+    {
+      width: leftWidth,
+      height: Math.max(0, Number(padEye.mainPlate.leftShoulderHeight) || 0),
+      side: "L",
+      direction: -1,
+    },
+    {
+      width: rightWidth,
+      height: Math.max(0, Number(padEye.mainPlate.rightShoulderHeight) || 0),
+      side: "R",
+      direction: 1,
+    },
+  ]
+    .filter(({ height }) => height > 0)
+    .map(({ width, height, side, direction }) => {
+      const x = direction * (width + size * 2);
+      return createDimension(
+        point(x, 0),
+        point(x, height),
+        `${side} SH ${height} ${padEye.units}`,
+        point(x + direction * size * 2, height / 2),
+        size,
+        "x",
+      );
+    });
 
   return [
     createDimension(
@@ -69,5 +95,6 @@ export function calculateMainPlateDimensionCallouts(
       size,
       "y",
     ),
+    ...shoulderDimensions,
   ];
 }

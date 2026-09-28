@@ -6,6 +6,8 @@
     "height": 390,
     "leftWidth": 245,
     "rightWidth": 245,
+    "leftShoulderHeight": 0,
+    "rightShoulderHeight": 0,
     "outerRadius": 150,
     "holeDiameter": 80
   },
