@@ -1,3 +1,4 @@
+// src/geometry/draw/cheekPlate.js
 import * as THREE from "three";
 
 export function createCheekPlateMesh(plate, index, padEye, material) {

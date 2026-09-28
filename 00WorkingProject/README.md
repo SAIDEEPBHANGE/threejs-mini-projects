@@ -1,3 +1,5 @@
+<!-- README.md -->
+
 # Pad Eye Design Tool
 
 A browser-based engineering configurator for building a pad-eye plate assembly and inspecting its dimensions in a live Three.js viewport.

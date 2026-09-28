@@ -1,3 +1,4 @@
+// src/App.jsx
 import { useEffect, useState } from "react";
 import { usePadEyeState } from "./hooks/usePadEyeState";
 import { PadEyeCanvas } from "./components/PadEyeCanvas";

@@ -1,3 +1,4 @@
+// src/geometry/calculations/stiffenerProfile.js
 import * as THREE from "three";
 import { getTangentPoint } from "./tangent.js";
 

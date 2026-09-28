@@ -1,3 +1,4 @@
+// src/geometry/draw/mainPlate.js
 import * as THREE from "three";
 import { getBaseExtensions } from "../calculations/mainPlateProfile.js";
 import { getMainPlateTangents } from "../calculations/tangent.js";

@@ -1,3 +1,4 @@
+// src/dimensions/draw/dimensionPrimitives.js
 import * as THREE from "three";
 
 export function addDimensionLine(group, points) {

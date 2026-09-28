@@ -1,3 +1,4 @@
+// src/geometry/calculations/stiffenerPlacement.js
 import {
   getBaseExtensions,
   getMainPlateHeightAtX,

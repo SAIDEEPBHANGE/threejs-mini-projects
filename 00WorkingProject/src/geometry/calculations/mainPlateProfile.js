@@ -1,3 +1,4 @@
+// src/geometry/calculations/mainPlateProfile.js
 import { getMainPlateTangents } from "./tangent.js";
 
 export function getBaseExtensions(mainPlate, stiffeners = []) {

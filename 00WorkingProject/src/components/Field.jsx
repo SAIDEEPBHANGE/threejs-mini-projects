@@ -1,3 +1,4 @@
+// src/components/Field.jsx
 export function Field({ label, value, onChange }) {
   return (
     <label className="block text-sm text-slate-600">

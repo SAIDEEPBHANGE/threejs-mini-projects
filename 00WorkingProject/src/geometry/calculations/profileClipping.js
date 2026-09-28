@@ -1,3 +1,4 @@
+// src/geometry/calculations/profileClipping.js
 import * as THREE from "three";
 
 export function clipProfileAtHeight(points, height, keepAbove) {

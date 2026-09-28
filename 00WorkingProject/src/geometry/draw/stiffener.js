@@ -1,3 +1,4 @@
+// src/geometry/draw/stiffener.js
 import * as THREE from "three";
 import { splitProfileAroundHole } from "../calculations/splitProfileAroundHole.js";
 import { createStiffenerProfile } from "../calculations/stiffenerProfile.js";
