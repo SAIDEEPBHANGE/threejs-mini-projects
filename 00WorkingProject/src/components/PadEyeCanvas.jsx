@@ -50,32 +50,50 @@ export function PadEyeCanvas({ padEye }) {
     const viewHelper = new ViewHelper(camera, renderer.domElement);
     viewHelper.location.top = 16;
     viewHelper.location.right = 16;
-    const negativeAxisColors = {
-      negX: 0xff4466,
-      negY: 0x88ff44,
-      negZ: 0x4488ff,
+    const axisStyles = {
+      posX: { color: 0xff4466, label: "+X", opacity: 1 },
+      negX: { color: 0xff4466, label: "-X", opacity: 0.55 },
+      posY: { color: 0x88ff44, label: "+Y", opacity: 1 },
+      negY: { color: 0x88ff44, label: "-Y", opacity: 0.55 },
+      posZ: { color: 0x4488ff, label: "+Z", opacity: 1 },
+      negZ: { color: 0x4488ff, label: "-Z", opacity: 0.55 },
     };
+    const replacedAxisMaterials = new Set();
     viewHelper.children.forEach((axisPoint) => {
-      const color = negativeAxisColors[axisPoint.userData.type];
-      if (color === undefined) return;
+      const style = axisStyles[axisPoint.userData.type];
+      if (!style) return;
 
-      axisPoint.material = axisPoint.material.clone();
+      const originalMaterial = axisPoint.material;
+      const material = originalMaterial.clone();
+      replacedAxisMaterials.add(originalMaterial);
       const markerCanvas = document.createElement("canvas");
-      markerCanvas.width = 64;
-      markerCanvas.height = 64;
+      markerCanvas.width = 128;
+      markerCanvas.height = 128;
       const markerContext = markerCanvas.getContext("2d");
       markerContext.beginPath();
-      markerContext.arc(32, 32, 14, 0, Math.PI * 2);
-      markerContext.fillStyle = `#${color.toString(16).padStart(6, "0")}`;
+      markerContext.arc(64, 64, 48, 0, Math.PI * 2);
+      markerContext.fillStyle = `#${style.color.toString(16).padStart(6, "0")}`;
       markerContext.fill();
+      markerContext.fillStyle = "#101820";
+      markerContext.font = "700 42px Arial, sans-serif";
+      markerContext.textAlign = "center";
+      markerContext.textBaseline = "middle";
+      markerContext.fillText(style.label, 64, 66);
 
       const markerTexture = new THREE.CanvasTexture(markerCanvas);
       markerTexture.colorSpace = THREE.SRGBColorSpace;
-      axisPoint.material.map = markerTexture;
-      axisPoint.material.color.setHex(0xffffff);
-      axisPoint.material.opacity = 0.55;
-      axisPoint.material.transparent = true;
-      axisPoint.material.needsUpdate = true;
+      material.map = markerTexture;
+      material.color.setHex(0xffffff);
+      material.opacity = style.opacity;
+      material.transparent = true;
+      material.depthWrite = false;
+      material.alphaTest = 0.02;
+      material.needsUpdate = true;
+      axisPoint.material = material;
+    });
+    replacedAxisMaterials.forEach((material) => {
+      material.map?.dispose();
+      material.dispose();
     });
 
     const ambientLight = new THREE.AmbientLight(0xffffff, 1.35);
