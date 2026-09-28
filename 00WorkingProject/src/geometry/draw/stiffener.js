@@ -23,6 +23,7 @@ export function createStiffenerMeshes(padEye, stiffener, material) {
       const geometry = new THREE.ExtrudeGeometry(shape, {
         depth: thickness,
         bevelEnabled: false,
+        curveSegments: 48,
       });
       geometry.translate(0, 0, -thickness / 2);
 

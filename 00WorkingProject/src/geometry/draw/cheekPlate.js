@@ -16,6 +16,7 @@ export function createCheekPlateMesh(plate, index, padEye, material) {
   const geometry = new THREE.ExtrudeGeometry(cheekShape, {
     depth: cheekThickness,
     bevelEnabled: false,
+    curveSegments: 48,
   });
   geometry.translate(0, 0, -cheekThickness / 2);
 

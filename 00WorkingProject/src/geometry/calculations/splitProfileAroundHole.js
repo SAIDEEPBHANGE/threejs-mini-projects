@@ -11,7 +11,7 @@ export function splitProfileAroundHole(shape, padEye, positionX, thickness) {
 
   const clearanceHalfHeight = Math.sqrt(holeRadius ** 2 - closestXToHole ** 2);
   const holeCenterY = Number(padEye.mainPlate.height) || 0;
-  const points = shape.extractPoints(24).shape;
+  const points = shape.extractPoints(48).shape;
   return [
     createShapeFromPoints(
       clipProfileAtHeight(points, holeCenterY - clearanceHalfHeight, false),

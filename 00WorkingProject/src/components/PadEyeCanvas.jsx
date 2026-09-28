@@ -2,9 +2,10 @@
 import { useEffect, useRef } from "react";
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
+import { RoomEnvironment } from "three/addons/environments/RoomEnvironment.js";
 import { buildPadEyeModel } from "../geometry/index.js";
 
-export function PadEyeCanvas({ padEye, isDark }) {
+export function PadEyeCanvas({ padEye }) {
   const canvasRef = useRef(null);
 
   useEffect(() => {
@@ -12,7 +13,7 @@ export function PadEyeCanvas({ padEye, isDark }) {
 
     const host = canvasRef.current;
     const scene = new THREE.Scene();
-    scene.background = new THREE.Color(isDark ? 0x12181e : 0xf8fafc);
+    scene.background = new THREE.Color(0x000000);
 
     const camera = new THREE.PerspectiveCamera(
       35,
@@ -26,7 +27,17 @@ export function PadEyeCanvas({ padEye, isDark }) {
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     renderer.setSize(host.clientWidth, host.clientHeight);
     renderer.outputColorSpace = THREE.SRGBColorSpace;
+    renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    renderer.toneMappingExposure = 1.15;
     host.appendChild(renderer.domElement);
+
+    const pmremGenerator = new THREE.PMREMGenerator(renderer);
+    const environment = new RoomEnvironment();
+    const environmentTarget = pmremGenerator.fromScene(environment, 0.04);
+    scene.environment = environmentTarget.texture;
+    scene.environmentIntensity = 1.1;
+    environment.dispose();
+    pmremGenerator.dispose();
 
     const controls = new OrbitControls(camera, renderer.domElement);
     controls.enableDamping = true;
@@ -54,7 +65,7 @@ export function PadEyeCanvas({ padEye, isDark }) {
     const maxDimension = Math.max(size.x, size.y, size.z, 1);
     const distance =
       maxDimension / (2 * Math.tan((camera.fov * Math.PI) / 360)) + 90;
-    controls.maxDistance = distance * 4;
+    controls.maxDistance = distance * 1;
     camera.far = Math.max(10000, maxDimension * 100);
     camera.updateProjectionMatrix();
 
@@ -89,6 +100,7 @@ export function PadEyeCanvas({ padEye, isDark }) {
       cancelAnimationFrame(rafId);
       window.removeEventListener("resize", handleResize);
       controls.dispose();
+      environmentTarget.dispose();
       renderer.dispose();
       host.removeChild(renderer.domElement);
       padEyeGroup.traverse((child) => {
@@ -108,7 +120,7 @@ export function PadEyeCanvas({ padEye, isDark }) {
         }
       });
     };
-  }, [isDark, padEye]);
+  }, [padEye]);
 
   return (
     <section className="overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-xl">
@@ -121,11 +133,7 @@ export function PadEyeCanvas({ padEye, isDark }) {
       <div
         ref={canvasRef}
         className="h-150 w-full"
-        style={{
-          background: isDark
-            ? "radial-gradient(circle at top, #26313b, #19222b 58%, #11171d)"
-            : "radial-gradient(circle at top, #f8fafc, #e2e8f0 55%, #cbd5e1)",
-        }}
+        style={{ background: "#000000" }}
       />
     </section>
   );

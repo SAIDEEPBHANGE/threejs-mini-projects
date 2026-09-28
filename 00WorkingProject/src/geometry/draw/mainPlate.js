@@ -43,6 +43,7 @@ export function createMainPlateGeometry(mainPlate, stiffeners = []) {
   const geometry = new THREE.ExtrudeGeometry(shape, {
     depth: thickness,
     bevelEnabled: false,
+    curveSegments: 48,
   });
   geometry.translate(0, 0, -thickness / 2);
   return geometry;

@@ -3,20 +3,26 @@ import * as THREE from "three";
 
 export function createPadEyeMaterials() {
   return {
-    mainPlate: new THREE.MeshStandardMaterial({
-      color: 0xcbd5e1,
-      metalness: 0.4,
-      roughness: 0.65,
+    mainPlate: new THREE.MeshPhysicalMaterial({
+      color: 0xc3cbd0,
+      metalness: 0.82,
+      roughness: 0.28,
+      clearcoat: 0.28,
+      clearcoatRoughness: 0.24,
     }),
-    cheekPlate: new THREE.MeshStandardMaterial({
-      color: 0x94a3b8,
-      metalness: 0.25,
-      roughness: 0.7,
+    cheekPlate: new THREE.MeshPhysicalMaterial({
+      color: 0x657d8c,
+      metalness: 0.78,
+      roughness: 0.36,
+      clearcoat: 0.2,
+      clearcoatRoughness: 0.3,
     }),
-    stiffener: new THREE.MeshStandardMaterial({
-      color: 0xe2e8f0,
-      metalness: 0.2,
-      roughness: 0.75,
+    stiffener: new THREE.MeshPhysicalMaterial({
+      color: 0xb88752,
+      metalness: 0.84,
+      roughness: 0.3,
+      clearcoat: 0.24,
+      clearcoatRoughness: 0.26,
     }),
   };
 }

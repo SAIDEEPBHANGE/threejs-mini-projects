@@ -42,7 +42,7 @@ function App() {
           </button>
         </div>
         <div className="grid gap-6 xl:grid-cols-[1.15fr_0.85fr]">
-          <PadEyeCanvas padEye={padEye} isDark={isDark} />
+          <PadEyeCanvas padEye={padEye} />
           <PadEyeForm
             padEye={padEye}
             setPadEye={setPadEye}
