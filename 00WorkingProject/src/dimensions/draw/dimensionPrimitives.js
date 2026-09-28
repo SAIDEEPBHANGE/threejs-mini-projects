@@ -22,7 +22,7 @@ export function addDimensionLabel(group, text, position, size) {
   canvas.width = Math.min(720, Math.max(360, longestLine * 21 + 48));
   canvas.height = 32 + lines.length * 52;
   const context = canvas.getContext("2d");
-  context.fillStyle = "rgba(255, 255, 255, 1)";
+  context.fillStyle = "rgba(255, 255, 255, 0.7)";
   context.beginPath();
   context.roundRect(8, 8, canvas.width - 16, canvas.height - 16, 14);
   context.fill();

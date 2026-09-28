@@ -3,6 +3,7 @@ import { useEffect, useRef } from "react";
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import { RoomEnvironment } from "three/addons/environments/RoomEnvironment.js";
+import { ViewHelper } from "three/addons/helpers/ViewHelper.js";
 import { buildPadEyeModel } from "../geometry/index.js";
 
 export function PadEyeCanvas({ padEye }) {
@@ -29,13 +30,14 @@ export function PadEyeCanvas({ padEye }) {
     renderer.outputColorSpace = THREE.SRGBColorSpace;
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
     renderer.toneMappingExposure = 1.15;
+    renderer.autoClear = false;
     host.appendChild(renderer.domElement);
 
     const pmremGenerator = new THREE.PMREMGenerator(renderer);
     const environment = new RoomEnvironment();
     const environmentTarget = pmremGenerator.fromScene(environment, 0.04);
     scene.environment = environmentTarget.texture;
-    scene.environmentIntensity = 1.1;
+    scene.environmentIntensity = 0.55;
     environment.dispose();
     pmremGenerator.dispose();
 
@@ -44,6 +46,10 @@ export function PadEyeCanvas({ padEye }) {
     controls.enablePan = false;
     controls.minDistance = 120;
     controls.maxDistance = 900;
+
+    const viewHelper = new ViewHelper(camera, renderer.domElement);
+    viewHelper.location.top = 16;
+    viewHelper.location.right = 16;
 
     const ambientLight = new THREE.AmbientLight(0xffffff, 1.35);
     scene.add(ambientLight);
@@ -75,7 +81,28 @@ export function PadEyeCanvas({ padEye }) {
       center.z + distance,
     );
     controls.target.copy(center);
+    viewHelper.center.copy(center);
     controls.update();
+
+    const handleViewHelperClick = (event) => {
+      if (!viewHelper.handleClick(event)) return;
+      event.stopImmediatePropagation();
+      controls.enabled = false;
+    };
+    renderer.domElement.addEventListener(
+      "pointerdown",
+      handleViewHelperClick,
+      true,
+    );
+
+    const handlePointerMove = (event) => {
+      const bounds = renderer.domElement.getBoundingClientRect();
+      const overHelper =
+        event.clientX >= bounds.right - 144 &&
+        event.clientY <= bounds.top + 144;
+      renderer.domElement.style.cursor = overHelper ? "pointer" : "";
+    };
+    renderer.domElement.addEventListener("pointermove", handlePointerMove);
 
     const handleResize = () => {
       if (!host) return;
@@ -88,10 +115,19 @@ export function PadEyeCanvas({ padEye }) {
 
     window.addEventListener("resize", handleResize);
 
+    const timer = new THREE.Timer();
+    timer.connect(document);
     let rafId = 0;
-    const tick = () => {
+    const tick = (timestamp) => {
+      timer.update(timestamp);
+      if (viewHelper.animating) {
+        viewHelper.update(timer.getDelta());
+        if (!viewHelper.animating) controls.enabled = true;
+      }
       controls.update();
+      renderer.clear();
       renderer.render(scene, camera);
+      viewHelper.render(renderer);
       rafId = requestAnimationFrame(tick);
     };
     tick();
@@ -99,8 +135,34 @@ export function PadEyeCanvas({ padEye }) {
     return () => {
       cancelAnimationFrame(rafId);
       window.removeEventListener("resize", handleResize);
+      renderer.domElement.removeEventListener(
+        "pointerdown",
+        handleViewHelperClick,
+        true,
+      );
+      renderer.domElement.removeEventListener("pointermove", handlePointerMove);
       controls.dispose();
+      timer.dispose();
       environmentTarget.dispose();
+      const disposedGeometries = new Set();
+      const disposedMaterials = new Set();
+      viewHelper.traverse((child) => {
+        if (child.geometry && !disposedGeometries.has(child.geometry)) {
+          child.geometry.dispose();
+          disposedGeometries.add(child.geometry);
+        }
+        const materials = Array.isArray(child.material)
+          ? child.material
+          : child.material
+            ? [child.material]
+            : [];
+        materials.forEach((material) => {
+          if (disposedMaterials.has(material)) return;
+          material.map?.dispose();
+          material.dispose();
+          disposedMaterials.add(material);
+        });
+      });
       renderer.dispose();
       host.removeChild(renderer.domElement);
       padEyeGroup.traverse((child) => {

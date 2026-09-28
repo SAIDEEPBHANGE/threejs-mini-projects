@@ -46,7 +46,7 @@
       "bottomRadius": 150
     },
     {
-      "id": "ST-03",
+      "id": "ST-04",
       "type": "curved",
       "position": "left",
       "thickness": 12,
@@ -55,7 +55,7 @@
       "bottomRadius": 150
     },
     {
-      "id": "ST-03",
+      "id": "ST-05",
       "type": "angled",
       "position": "left",
       "thickness": 10,
@@ -65,7 +65,7 @@
       "bottomRadius": 0
     },
     {
-      "id": "ST-04",
+      "id": "ST-06",
       "type": "angled",
       "position": "right",
       "thickness": 10,
@@ -75,7 +75,7 @@
       "bottomRadius": 0
     },
     {
-      "id": "ST-05",
+      "id": "ST-07",
       "type": "flat",
       "position": "left",
       "thickness": 10,
@@ -86,7 +86,7 @@
       "bottomRadius": 0
     },
     {
-      "id": "ST-06",
+      "id": "ST-08",
       "type": "flat",
       "position": "right",
       "thickness": 10,
