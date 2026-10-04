@@ -4,12 +4,12 @@ import {
   createCirclePoints,
   createMainPlateOutline,
   createProjectionBounds,
+  getProjectionPalette,
 } from "./projectionUtils.js";
 
-const colors = { plate: "#c3cbd0", cheek: "#657d8c", stiffener: "#b88752" };
-
-export function createFrontProjection(padEye, background) {
+export function createFrontProjection(padEye, background, axisColor) {
   const { mainPlate } = padEye;
+  const colors = getProjectionPalette(background === "#141920");
   const width = Math.max(
     Number(mainPlate.leftWidth) || 0,
     Number(mainPlate.rightWidth) || 0,
@@ -20,7 +20,7 @@ export function createFrontProjection(padEye, background) {
   primitives.push({
     points: outline,
     fill: colors.plate,
-    stroke: "#71808a",
+    stroke: colors.outline,
     strokeWidth: 2,
   });
 
@@ -44,7 +44,7 @@ export function createFrontProjection(padEye, background) {
           [placement.positionX - halfThickness, top],
         ],
         fill: colors.stiffener,
-        stroke: "#49351f",
+        stroke: colors.outline,
         strokeWidth: 1.5,
         opacity: 0.9,
       });
@@ -67,7 +67,7 @@ export function createFrontProjection(padEye, background) {
       ),
       fill: "none",
       stroke: colors.cheek,
-      strokeWidth: 3,
+      strokeWidth: 2,
       opacity: 0.95,
     });
   });
@@ -76,8 +76,19 @@ export function createFrontProjection(padEye, background) {
   primitives.push({
     points: createCirclePoints(0, mainPlate.height, holeRadius),
     fill: background,
-    stroke: "#283744",
+    stroke: colors.outline,
     strokeWidth: 2,
+  });
+  primitives.push({
+    closed: false,
+    points: [
+      [0, 0],
+      [0, mainPlate.height + (Number(mainPlate.outerRadius) || 0)],
+    ],
+    fill: "none",
+    stroke: axisColor,
+    strokeWidth: 1.4,
+    dash: "10 4 2 4",
   });
 
   const padding = Math.max(24, width * 0.12);

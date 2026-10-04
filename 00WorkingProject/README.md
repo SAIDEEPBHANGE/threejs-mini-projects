@@ -27,8 +27,8 @@ npm run build
 ## Features
 
 - Responsive layout with a scrollable engineering form and interactive 3D preview.
-- Switch between an interactive Three.js 3D canvas and SVG 2D orthographic projections.
-- In 2D mode, select a front view (plate profile) or side view (thickness and plate stacking).
+- Switch between an interactive Three.js 3D canvas and one SVG 2D canvas showing front and side orthographic views side by side.
+- The combined 2D canvas draws engineering dimensions and dashed-dot center axes for both projections.
 - Live model updates as form values change.
 - Orbit controls, automatic camera fit, and a model-scaled zoom-out limit.
 - Light/dark theme toggle; the selection is stored in local storage.
@@ -36,25 +36,25 @@ npm run build
 - 3D callouts for main-plate dimensions and cheek/stiffener values.
 - Main plate has tangent side connections to its circular upper profile and a centered pin hole.
 - Cheek plates share the main hole center. Up to four can be configured, stacked two per face.
-- Stiffeners support flat, angled, and curved profiles. They are placed on both main-plate faces, derive height from the plate outline, and are split around the hole when needed.
-- Endpoint stiffeners can define a base height; the main-plate base and tangent-to-arc outline extend to match.
+- Stiffeners support flat, angled, and curved profiles. They are placed on both main-plate faces, derive height from the plate outline at both thickness edges, and are split around the hole when needed.
+- Left and right shoulder heights are independent main-plate inputs; endpoint stiffeners do not change plate outline height.
 
 ## Engineering Inputs
 
-| Section        | Inputs and behavior                                                                                                                                                        |
-| :------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| General        | Pad-eye ID and units. The supplied defaults use millimeters.                                                                                                               |
-| Main plate     | Thickness, arc-center height, left/right base widths, outer radius, and hole diameter. The hole center is at the arc center. The uppermost point is at height plus radius. |
-| Cheek plates   | Zero to four plates total, distributed two per face. Each plate has an outer radius and thickness; its inner hole matches the main-plate hole.                             |
-| Stiffeners     | Unlimited dynamic list with type, side/center position, offset, thickness, and top size. Flat and angled profiles also use bottom size; curved profiles use bottom radius. |
-| Base stiffener | When a left/right stiffener reaches the corresponding main-plate base edge, a Base Height input is shown and the main-plate side extends to that height.                   |
+| Section      | Inputs and behavior                                                                                                                                                                                                                  |
+| :----------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| General      | Pad-eye ID and units. The supplied defaults use millimeters.                                                                                                                                                                         |
+| Main plate   | Thickness, arc-center height, left/right base widths and shoulder heights, outer radius, and hole diameter. The hole center is at the arc center. The uppermost point is at height plus radius.                                      |
+| Cheek plates | Zero to four plates total, distributed two per face. Each plate has an outer radius and thickness; its inner hole matches the main-plate hole.                                                                                       |
+| Stiffeners   | Unlimited dynamic list with type, side/center position, offset, thickness, and top size. Height follows the plate outline at both thickness edges. Flat and angled profiles also use bottom size; curved profiles use bottom radius. |
+| Shoulders    | Independent left and right heights raise the main-plate base corners and recalculate the tangent connection. Zero keeps that side at the baseline.                                                                                   |
 
 ## Project Structure
 
 ```text
 src/
   components/       React form and reusable fields
-  2d/               SVG front/side projection calculations and renderer
+  2d/               Combined front/side SVG projections, dimensions, and renderer
   3d/               Three.js canvas, model assembly, geometry, and dimensions
     geometry/
       calculations/ Tangents, profiles, placement, and hole clipping
@@ -76,9 +76,9 @@ flowchart TD
     App --> Mode{View mode}
     Mode -->|3D| Canvas[3D / PadEyeCanvas]
     Mode -->|2D| Projection[2D / PadEye2DCanvas]
-    Projection --> View{Projection}
-    View -->|Front| Front[XY front profile SVG]
-    View -->|Side| Side[ZY side profile SVG]
+    Projection --> Front[XY front profile SVG]
+    Projection --> Side[ZY side profile SVG]
+    Projection --> Annotations[Dimensions and dashed-dot center axes]
     App --> Form
     Canvas -->|padEye| Builder[buildPadEyeModel]
     Builder --> Main[createMainPlateGeometry]

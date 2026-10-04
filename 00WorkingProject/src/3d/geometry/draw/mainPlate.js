@@ -3,14 +3,14 @@ import * as THREE from "three";
 import { getBaseExtensions } from "../calculations/mainPlateProfile.js";
 import { getMainPlateTangents } from "../calculations/tangent.js";
 
-export function createMainPlateGeometry(mainPlate, stiffeners = []) {
+export function createMainPlateGeometry(mainPlate) {
   const shape = new THREE.Shape();
   const leftWidth = Number(mainPlate.leftWidth) || 0;
   const rightWidth = Number(mainPlate.rightWidth) || 0;
   const radius = Number(mainPlate.outerRadius) || 0;
   const plateHeight = Number(mainPlate.height) || radius || 60;
   const holeRadius = (Number(mainPlate.holeDiameter) || 0) / 2;
-  const extensions = getBaseExtensions(mainPlate, stiffeners);
+  const extensions = getBaseExtensions(mainPlate);
   const { left: leftTangent, right: rightTangent } = getMainPlateTangents(
     mainPlate,
     extensions,

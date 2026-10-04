@@ -1,21 +1,6 @@
 // src/components/PadEyeForm.jsx
 import Field from "./Field";
 
-function isAtMainPlateBase(stiffener, mainPlate) {
-  const baseWidth =
-    stiffener.position === "left"
-      ? Number(mainPlate.leftWidth)
-      : stiffener.position === "right"
-        ? Number(mainPlate.rightWidth)
-        : null;
-
-  return (
-    baseWidth !== null &&
-    Math.abs(Number(stiffener.offset) - baseWidth) <=
-      Math.max(0, Number(stiffener.thickness) || 0) / 2
-  );
-}
-
 export function PadEyeForm({
   padEye,
   updateMainPlate,
@@ -244,15 +229,6 @@ export function PadEyeForm({
                       updateStiffener(index, "offset", value)
                     }
                   />
-                  {isAtMainPlateBase(stiffener, padEye.mainPlate) && (
-                    <Field
-                      label="Base Height"
-                      value={stiffener.height}
-                      onChange={(value) =>
-                        updateStiffener(index, "height", value)
-                      }
-                    />
-                  )}
                   <Field
                     label="Top Size"
                     value={stiffener.topSize}

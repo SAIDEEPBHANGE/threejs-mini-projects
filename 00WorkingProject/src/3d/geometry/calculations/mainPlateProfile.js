@@ -1,28 +1,11 @@
 // src/3d/geometry/calculations/mainPlateProfile.js
 import { getMainPlateTangents } from "./tangent.js";
 
-export function getBaseExtensions(mainPlate, stiffeners = []) {
-  const extensions = {
+export function getBaseExtensions(mainPlate) {
+  return {
     left: Math.max(0, Number(mainPlate.leftShoulderHeight) || 0),
     right: Math.max(0, Number(mainPlate.rightShoulderHeight) || 0),
   };
-
-  stiffeners.forEach((stiffener) => {
-    const side = stiffener.position;
-    if (side !== "left" && side !== "right") return;
-
-    const baseWidth = Number(mainPlate[`${side}Width`]) || 0;
-    const offset = Number(stiffener.offset) || 0;
-    const halfThickness = Math.max(0, Number(stiffener.thickness) || 0) / 2;
-    if (Math.abs(offset - baseWidth) > halfThickness) return;
-
-    extensions[side] = Math.max(
-      extensions[side],
-      Math.max(0, Number(stiffener.height) || 0),
-    );
-  });
-
-  return extensions;
 }
 
 export function getMainPlateHeightAtX(

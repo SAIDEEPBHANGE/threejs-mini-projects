@@ -82,7 +82,6 @@
       "position": "left",
       "thickness": 10,
       "offset": 245,
-      "height": 390,
       "topSize": 30,
       "bottomSize": 30,
       "bottomRadius": 0
@@ -93,7 +92,6 @@
       "position": "right",
       "thickness": 10,
       "offset": 245,
-      "height": 390,
       "topSize": 30,
       "bottomSize": 30,
       "bottomRadius": 0

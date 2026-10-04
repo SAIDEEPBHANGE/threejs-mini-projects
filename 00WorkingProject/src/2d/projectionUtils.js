@@ -2,9 +2,27 @@
 import { getBaseExtensions } from "../3d/geometry/calculations/mainPlateProfile.js";
 import { getMainPlateTangents } from "../3d/geometry/calculations/tangent.js";
 
+export function getProjectionPalette(isDark) {
+  return isDark
+    ? {
+        plate: "#404040",
+        cheek: "#707070",
+        stiffener: "#999999",
+        outline: "#dedede",
+        hiddenLine: "#bcbcbc",
+      }
+    : {
+        plate: "#eeeeee",
+        cheek: "#c8c8c8",
+        stiffener: "#a8a8a8",
+        outline: "#303030",
+        hiddenLine: "#4b4b4b",
+      };
+}
+
 export function createMainPlateOutline(padEye) {
-  const { mainPlate, stiffeners } = padEye;
-  const extensions = getBaseExtensions(mainPlate, stiffeners);
+  const { mainPlate } = padEye;
+  const extensions = getBaseExtensions(mainPlate);
   const tangents = getMainPlateTangents(mainPlate, extensions);
   const radius = Number(mainPlate.outerRadius) || 0;
   const height = Number(mainPlate.height) || 0;
@@ -49,4 +67,13 @@ export function createProjectionBounds(primitives, padding) {
   const minY = Math.min(...ys) - padding;
   const maxY = Math.max(...ys) + padding;
   return { minX, maxX, minY, maxY, width: maxX - minX, height: maxY - minY };
+}
+
+export function calculateSharedProjectionScale(boundsList, frame) {
+  return Math.min(
+    ...boundsList.flatMap((bounds) => [
+      frame.width / bounds.width,
+      frame.height / bounds.height,
+    ]),
+  );
 }

@@ -81,7 +81,6 @@ export function usePadEyeState() {
           position: "center",
           thickness: 10,
           offset: 30,
-          height: 0,
           topSize: 80,
           bottomSize: 100,
           bottomRadius: 0,

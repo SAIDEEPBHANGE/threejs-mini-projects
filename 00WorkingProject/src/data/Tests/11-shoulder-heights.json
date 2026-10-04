@@ -19,7 +19,6 @@
       "position": "left",
       "thickness": 20,
       "offset": 180,
-      "height": 80,
       "topSize": 35,
       "bottomSize": 35,
       "bottomRadius": 0
@@ -30,7 +29,6 @@
       "position": "right",
       "thickness": 12,
       "offset": 220,
-      "height": 90,
       "topSize": 30,
       "bottomSize": 30,
       "bottomRadius": 0

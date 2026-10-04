@@ -2,29 +2,36 @@
 import { calculateStiffenerPlacement } from "../3d/geometry/calculations/stiffenerPlacement.js";
 import { splitProfileAroundHole } from "../3d/geometry/calculations/splitProfileAroundHole.js";
 import { createStiffenerProfile } from "../3d/geometry/calculations/stiffenerProfile.js";
-import { createProjectionBounds } from "./projectionUtils.js";
+import {
+  createProjectionBounds,
+  getProjectionPalette,
+} from "./projectionUtils.js";
 
-const colors = { plate: "#c3cbd0", cheek: "#657d8c", stiffener: "#b88752" };
-
-export function createSideProjection(padEye) {
+// Projects plate depth, cheek stacks, hidden hole edges, and stiffeners onto depth/Y.
+export function createSideProjection(padEye, axisColor, isDark = false) {
   const { mainPlate } = padEye;
+  const colors = getProjectionPalette(isDark);
   const mainThickness = Number(mainPlate.thickness) || 10;
   const holeRadius = (Number(mainPlate.holeDiameter) || 0) / 2;
   const centerY = Number(mainPlate.height) || 0;
   const outerRadius = Number(mainPlate.outerRadius) || 0;
-  const primitives = [
-    {
+  const primitives = [];
+  const addMainPlateBand = (lowY, highY) => {
+    if (highY <= lowY) return;
+    primitives.push({
       points: [
-        [-mainThickness / 2, 0],
-        [mainThickness / 2, 0],
-        [mainThickness / 2, centerY + outerRadius],
-        [-mainThickness / 2, centerY + outerRadius],
+        [-mainThickness / 2, lowY],
+        [mainThickness / 2, lowY],
+        [mainThickness / 2, highY],
+        [-mainThickness / 2, highY],
       ],
       fill: colors.plate,
-      stroke: "#71808a",
+      stroke: colors.outline,
       strokeWidth: 2,
-    },
-  ];
+    });
+  };
+  addMainPlateBand(0, centerY - holeRadius);
+  addMainPlateBand(centerY + holeRadius, centerY + outerRadius);
 
   padEye.cheekPlates.forEach((plate, index) => {
     const radius = Number(plate.radius) || 0;
@@ -53,7 +60,7 @@ export function createSideProjection(padEye) {
           [leftZ, highY],
         ],
         fill: colors.cheek,
-        stroke: "#334a58",
+        stroke: colors.outline,
         strokeWidth: 1.5,
       });
     };
@@ -78,7 +85,7 @@ export function createSideProjection(padEye) {
         primitives.push({
           points,
           fill: colors.stiffener,
-          stroke: "#49351f",
+          stroke: colors.outline,
           strokeWidth: 1.5,
           opacity: 0.86,
         });
@@ -93,9 +100,20 @@ export function createSideProjection(padEye) {
       [mainThickness / 2, centerY - holeRadius],
     ],
     fill: "none",
-    stroke: "#48535c",
+    stroke: colors.hiddenLine,
     strokeWidth: 1.5,
     dash: "5 5",
+  });
+  primitives.push({
+    closed: false,
+    points: [
+      [0, 0],
+      [0, centerY + outerRadius],
+    ],
+    fill: "none",
+    stroke: axisColor,
+    strokeWidth: 1.4,
+    dash: "10 4 2 4",
   });
   primitives.push({
     closed: false,
@@ -104,7 +122,7 @@ export function createSideProjection(padEye) {
       [mainThickness / 2, centerY + holeRadius],
     ],
     fill: "none",
-    stroke: "#48535c",
+    stroke: colors.hiddenLine,
     strokeWidth: 1.5,
     dash: "5 5",
   });

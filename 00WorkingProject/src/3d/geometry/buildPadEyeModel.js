@@ -10,7 +10,7 @@ export function buildPadEyeModel(padEye) {
   const group = new THREE.Group();
   const materials = createPadEyeMaterials();
   const mainPlate = new THREE.Mesh(
-    createMainPlateGeometry(padEye.mainPlate, padEye.stiffeners),
+    createMainPlateGeometry(padEye.mainPlate),
     materials.mainPlate,
   );
   group.add(mainPlate);

@@ -10,7 +10,6 @@ function App() {
     () => window.localStorage.getItem("pad-eye-theme") === "dark",
   );
   const [viewMode, setViewMode] = useState("3d");
-  const [projection, setProjection] = useState("front");
   const {
     padEye,
     setPadEye,
@@ -55,26 +54,6 @@ function App() {
                 {mode.toUpperCase()}
               </button>
             ))}
-            {viewMode === "2d" && (
-              <>
-                <span className="mx-1 h-6 border-l border-slate-300 dark:border-slate-700" />
-                {["front", "side"].map((view) => (
-                  <button
-                    key={view}
-                    type="button"
-                    aria-pressed={projection === view}
-                    onClick={() => setProjection(view)}
-                    className={`rounded-md px-3 py-2 text-sm font-medium transition ${
-                      projection === view
-                        ? "bg-sky-100 text-sky-900 dark:bg-sky-900 dark:text-sky-100"
-                        : "text-slate-600 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-800"
-                    }`}
-                  >
-                    {view === "front" ? "Front" : "Side"}
-                  </button>
-                ))}
-              </>
-            )}
           </div>
           <button
             type="button"
@@ -89,11 +68,7 @@ function App() {
           {viewMode === "3d" ? (
             <PadEyeCanvas padEye={padEye} isDark={isDark} />
           ) : (
-            <PadEye2DCanvas
-              padEye={padEye}
-              projection={projection}
-              isDark={isDark}
-            />
+            <PadEye2DCanvas padEye={padEye} isDark={isDark} />
           )}
           <PadEyeForm
             padEye={padEye}

@@ -14,15 +14,7 @@ export function calculateStiffenerPlacement(padEye, stiffener) {
         : 0;
   const thickness = Math.max(0, Number(stiffener.thickness) || 0);
   const halfThickness = thickness / 2;
-  const extensions = getBaseExtensions(padEye.mainPlate, padEye.stiffeners);
-  const baseWidth =
-    stiffener.position === "left"
-      ? Number(padEye.mainPlate.leftWidth)
-      : stiffener.position === "right"
-        ? Number(padEye.mainPlate.rightWidth)
-        : null;
-  const isAtMainPlateBase =
-    baseWidth !== null && Math.abs(offset - baseWidth) <= halfThickness;
+  const extensions = getBaseExtensions(padEye.mainPlate);
   const outlineHeight = Math.max(
     0,
     Math.min(
@@ -42,8 +34,6 @@ export function calculateStiffenerPlacement(padEye, stiffener) {
   return {
     positionX,
     thickness,
-    height: isAtMainPlateBase
-      ? Math.max(0, Number(stiffener.height) || 0)
-      : outlineHeight,
+    height: outlineHeight,
   };
 }

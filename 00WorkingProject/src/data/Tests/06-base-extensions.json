@@ -6,6 +6,8 @@
     "height": 250,
     "leftWidth": 180,
     "rightWidth": 180,
+    "leftShoulderHeight": 80,
+    "rightShoulderHeight": 120,
     "outerRadius": 120,
     "holeDiameter": 60
   },
@@ -17,7 +19,6 @@
       "position": "left",
       "thickness": 20,
       "offset": 180,
-      "height": 80,
       "topSize": 35,
       "bottomSize": 35,
       "bottomRadius": 0
@@ -28,7 +29,6 @@
       "position": "right",
       "thickness": 16,
       "offset": 180,
-      "height": 120,
       "topSize": 30,
       "bottomSize": 30,
       "bottomRadius": 0

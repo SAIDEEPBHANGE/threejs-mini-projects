@@ -1,24 +1,14 @@
 // src/3d/dimensions/calculations/componentLabels.js
-function createStiffenerLabel(stiffener, mainPlate, units) {
-  const leftWidth = Number(mainPlate.leftWidth) || 0;
-  const rightWidth = Number(mainPlate.rightWidth) || 0;
-  const baseWidth =
-    stiffener.position === "left"
-      ? leftWidth
-      : stiffener.position === "right"
-        ? rightWidth
-        : null;
-  const atBase =
-    baseWidth !== null &&
-    Math.abs(Number(stiffener.offset) - baseWidth) <=
-      (Number(stiffener.thickness) || 0) / 2;
-  const height = atBase ? `${Number(stiffener.height) || 0}` : "auto";
+import { calculateStiffenerPlacement } from "../../geometry/calculations/stiffenerPlacement.js";
+
+function createStiffenerLabel(stiffener, padEye) {
+  const { height } = calculateStiffenerPlacement(padEye, stiffener);
   const sizeDetails =
     stiffener.type === "curved"
       ? `TOP ${stiffener.topSize} | R ${stiffener.bottomRadius}`
       : `TOP ${stiffener.topSize} | BOT ${stiffener.bottomSize}`;
 
-  return `${stiffener.id} | ${stiffener.type.toUpperCase()}\nOFF ${stiffener.offset} | T ${stiffener.thickness} ${units}\n${sizeDetails} | H ${height}`;
+  return `${stiffener.id} | ${stiffener.type.toUpperCase()}\nOFF ${stiffener.offset} | T ${stiffener.thickness} ${padEye.units}\n${sizeDetails} | H ${height.toFixed(1)}`;
 }
 
 export function calculateComponentLabels(
@@ -46,9 +36,7 @@ export function calculateComponentLabels(
           : columns.left.length <= columns.right.length
             ? "left"
             : "right";
-    columns[column].push(
-      createStiffenerLabel(stiffener, padEye.mainPlate, padEye.units),
-    );
+    columns[column].push(createStiffenerLabel(stiffener, padEye));
   });
 
   return ["left", "right"].flatMap((column) => {
