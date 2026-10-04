@@ -1,4 +1,4 @@
-// src/geometry/calculations/splitProfileAroundHole.js
+// src/3d/geometry/calculations/splitProfileAroundHole.js
 import {
   clipProfileAtHeight,
   createShapeFromPoints,

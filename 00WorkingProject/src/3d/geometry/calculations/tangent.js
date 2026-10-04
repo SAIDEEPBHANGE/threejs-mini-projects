@@ -1,4 +1,4 @@
-// src/geometry/calculations/tangent.js
+// src/3d/geometry/calculations/tangent.js
 import * as THREE from "three";
 
 export function getTangentPoint(

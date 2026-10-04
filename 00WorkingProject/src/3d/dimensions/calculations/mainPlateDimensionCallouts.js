@@ -1,4 +1,4 @@
-// src/dimensions/calculations/mainPlateDimensionCallouts.js
+// src/3d/dimensions/calculations/mainPlateDimensionCallouts.js
 function createDimension(start, end, label, labelPosition, size, tickAxis) {
   return { start, end, label, labelPosition, size, tickAxis };
 }

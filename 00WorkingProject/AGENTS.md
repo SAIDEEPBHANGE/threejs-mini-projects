@@ -7,11 +7,12 @@ These instructions apply to `00WorkingProject`. Preserve the engineering behavio
 ## Architecture
 
 - `src/hooks/usePadEyeState.js` owns the editable pad-eye object and immutable form updates. Its current starter model is `src/data/Tests/01defaultPadEye.json`.
-- `src/geometry/calculations/` contains tangent, profile, placement, and clipping calculations. Keep Three.js mesh construction out of these modules where practical.
-- `src/geometry/draw/` converts calculated profiles to Three.js geometries and meshes.
-- `src/geometry/buildPadEyeModel.js` assembles the main plate, cheek plates, stiffeners, and dimension drawing.
-- `src/dimensions/calculations/` calculates dimension callouts and component-label positions. `src/dimensions/draw/` renders their lines and label sprites.
-- `src/components/PadEyeCanvas.jsx` owns the Three.js scene, camera, lights, renderer, controls, axis view helper, animation loop, and GPU cleanup.
+- `src/3d/geometry/calculations/` contains tangent, profile, placement, and clipping calculations. Keep Three.js mesh construction out of these modules where practical.
+- `src/3d/geometry/draw/` converts calculated profiles to Three.js geometries and meshes.
+- `src/3d/geometry/buildPadEyeModel.js` assembles the main plate, cheek plates, stiffeners, and dimension drawing.
+- `src/3d/dimensions/calculations/` calculates dimension callouts and component-label positions. `src/3d/dimensions/draw/` renders their lines and label sprites.
+- `src/3d/PadEyeCanvas.jsx` owns the Three.js scene, camera, lights, renderer, controls, axis view helper, animation loop, and GPU cleanup.
+- `src/2d/` owns SVG-based front and side orthographic projections. Reuse geometry calculations from `src/3d/geometry/calculations/` instead of reimplementing tangent or stiffener-height rules.
 - There is no render-manifest JSON layer and no configured test-runner script. Geometry is built directly from the current form-state object.
 
 ## Coordinate System
@@ -28,7 +29,7 @@ These instructions apply to `00WorkingProject`. Preserve the engineering behavio
 
 ## Main-Plate Profile
 
-The owning code is `src/geometry/calculations/tangent.js`, `src/geometry/calculations/mainPlateProfile.js`, and `src/geometry/draw/mainPlate.js`.
+The owning code is `src/3d/geometry/calculations/tangent.js`, `src/3d/geometry/calculations/mainPlateProfile.js`, and `src/3d/geometry/draw/mainPlate.js`.
 
 - The two base endpoints are `(-leftWidth, leftExtension)` and `(rightWidth, rightExtension)`.
 - Calculate a true tangent from each base endpoint to the circle centered at `(0, height)` with radius `outerRadius`. Connect each endpoint to its tangent point, then draw the circular arc between tangent points. Do not replace these tangent sides with vertical or arbitrary diagonal approximations.
@@ -41,7 +42,7 @@ The owning code is `src/geometry/calculations/tangent.js`, `src/geometry/calcula
 
 ## Cheek Plates
 
-The owning code is `src/geometry/draw/cheekPlate.js`.
+The owning code is `src/3d/geometry/draw/cheekPlate.js`.
 
 - Allow at most four cheek plates total, stacked as two on each face.
 - Even cheek indices go on positive Z; odd indices go on negative Z. Stack each plate outside previously placed plates on its own face using actual thicknesses so they do not overlap.
@@ -50,7 +51,7 @@ The owning code is `src/geometry/draw/cheekPlate.js`.
 
 ## Stiffeners and Special Cases
 
-The owning code is `src/geometry/calculations/stiffenerPlacement.js`, `stiffenerProfile.js`, `splitProfileAroundHole.js`, and `src/geometry/draw/stiffener.js`.
+The owning code is `src/3d/geometry/calculations/stiffenerPlacement.js`, `stiffenerProfile.js`, `splitProfileAroundHole.js`, and `src/3d/geometry/draw/stiffener.js`.
 
 - `position` selects X: left is `-offset`, right is `+offset`, and center is `0`.
 - For an ordinary stiffener, calculate the top height at both X edges of its thickness and use the lower result. This keeps its full thickness within the main-plate outline.
@@ -62,20 +63,23 @@ The owning code is `src/geometry/calculations/stiffenerPlacement.js`, `stiffener
 
 ## Dimensions and Labels
 
-- Keep dimension calculations in `src/dimensions/calculations/` and Three.js line/sprite construction in `src/dimensions/draw/`.
+- Keep dimension calculations in `src/3d/dimensions/calculations/` and Three.js line/sprite construction in `src/3d/dimensions/draw/`.
 - Main callouts cover left/right widths, main-plate height, outer radius, hole diameter, and main thickness. Component labels include cheek radius/thickness and stiffener type, offset, thickness, sizes/radius, and automatic or manual height.
 - Place labels outside the model, balance cheek/stiffener details across both sides, and preserve canvas aspect ratio when sizing sprites so text does not stretch.
 - If adding canvas-textured sprites, dispose their textures during viewport cleanup.
 
 ## Viewport and Materials
 
-- Keep metallic part materials in `src/geometry/materials.js`: main plate is stainless silver, cheeks are blue-gray steel, and stiffeners are bronze titanium. The viewport uses a `RoomEnvironment`, reduced environment intensity, physical materials, and softened reflections; preserve enough lighting to read the metal colors.
-- The viewport background is black. Keep antialiasing, scene lighting, automatic model framing, OrbitControls, and a model-relative zoom limit.
+- Keep metallic part materials in `src/3d/geometry/materials.js`: main plate is stainless silver, cheeks are blue-gray steel, and stiffeners are bronze titanium. The viewport uses a `RoomEnvironment`, reduced environment intensity, physical materials, and softened reflections; preserve enough lighting to read the metal colors.
+- The viewport background is `#f4f7fa` in light theme and `#141920` in dark theme. Keep antialiasing, scene lighting, automatic model framing, OrbitControls, and a model-relative zoom limit.
 - The corner `ViewHelper` has six signed endpoints (`+/-X`, `+/-Y`, `+/-Z`). Its CanvasTexture markers need transparent corners; negative endpoints use the same axis hue at lower opacity. Keep labels centered inside circular markers and keep the helper clickable.
 - The renderer uses `autoClear = false` because the helper renders as an overlay. Each frame must clear once, render the pad-eye scene, then render the helper; otherwise the helper pass can erase the model.
 - Use `THREE.Timer`, update it once per animation frame, and dispose it with event handlers, OrbitControls, environment target, geometries, materials, and textures on effect cleanup.
 
 ## Data and Verification
+
+- `App` switches between the Three.js view and SVG view. The SVG view supports front and side projections; keep both projections synchronized with the shared pad-eye geometry rules.
+- Front projection uses X/Y: show the tangent/crown outline, hole, cheek outlines, and front silhouettes of stiffeners. Side projection uses depth/Y: show main thickness, cheek stacking, and stiffener profiles.
 
 - Pad-eye JSON has top-level `id`, `units`, `mainPlate`, `cheekPlates`, and `stiffeners` fields. Keep fixtures structurally compatible with the object consumed by `buildPadEyeModel`.
 - Assign unique IDs to new cheek plates and stiffeners, including test fixtures.

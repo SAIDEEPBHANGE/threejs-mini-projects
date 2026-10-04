@@ -1,4 +1,4 @@
-// src/geometry/materials.js
+// src/3d/geometry/materials.js
 import * as THREE from "three";
 
 export function createPadEyeMaterials() {

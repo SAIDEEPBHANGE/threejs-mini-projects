@@ -1,4 +1,4 @@
-// src/geometry/buildPadEyeModel.js
+// src/3d/geometry/buildPadEyeModel.js
 import * as THREE from "three";
 import { createPadEyeDimensionDrawing } from "../dimensions/index.js";
 import { createCheekPlateMesh } from "./draw/cheekPlate.js";

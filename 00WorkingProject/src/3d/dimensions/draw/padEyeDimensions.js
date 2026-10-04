@@ -1,4 +1,4 @@
-// src/dimensions/draw/padEyeDimensions.js
+// src/3d/dimensions/draw/padEyeDimensions.js
 import * as THREE from "three";
 import { calculatePadEyeDimensionLayout } from "../calculations/padEyeDimensionLayout.js";
 import { addDimensionLabel, addDimensionLine } from "./dimensionPrimitives.js";

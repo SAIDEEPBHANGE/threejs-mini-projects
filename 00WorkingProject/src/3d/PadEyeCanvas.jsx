@@ -1,12 +1,12 @@
-// src/components/PadEyeCanvas.jsx
+// src/3d/PadEyeCanvas.jsx
 import { useEffect, useRef } from "react";
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import { RoomEnvironment } from "three/addons/environments/RoomEnvironment.js";
 import { ViewHelper } from "three/addons/helpers/ViewHelper.js";
-import { buildPadEyeModel } from "../geometry/index.js";
+import { buildPadEyeModel } from "./geometry/index.js";
 
-export function PadEyeCanvas({ padEye }) {
+export function PadEyeCanvas({ padEye, isDark }) {
   const canvasRef = useRef(null);
 
   useEffect(() => {
@@ -14,7 +14,8 @@ export function PadEyeCanvas({ padEye }) {
 
     const host = canvasRef.current;
     const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x000000);
+    const backgroundColor = isDark ? 0x141920 : 0xf4f7fa;
+    scene.background = new THREE.Color(backgroundColor);
 
     const camera = new THREE.PerspectiveCamera(
       35,
@@ -227,7 +228,7 @@ export function PadEyeCanvas({ padEye }) {
         }
       });
     };
-  }, [padEye]);
+  }, [isDark, padEye]);
 
   return (
     <section className="overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-xl">
@@ -240,7 +241,7 @@ export function PadEyeCanvas({ padEye }) {
       <div
         ref={canvasRef}
         className="h-150 w-full"
-        style={{ background: "#000000" }}
+        style={{ backgroundColor: isDark ? "#141920" : "#f4f7fa" }}
       />
     </section>
   );

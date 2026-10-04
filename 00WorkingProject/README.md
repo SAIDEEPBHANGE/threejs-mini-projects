@@ -27,9 +27,12 @@ npm run build
 ## Features
 
 - Responsive layout with a scrollable engineering form and interactive 3D preview.
+- Switch between an interactive Three.js 3D canvas and SVG 2D orthographic projections.
+- In 2D mode, select a front view (plate profile) or side view (thickness and plate stacking).
 - Live model updates as form values change.
 - Orbit controls, automatic camera fit, and a model-scaled zoom-out limit.
 - Light/dark theme toggle; the selection is stored in local storage.
+- Viewport backgrounds use `#f4f7fa` in light theme and `#141920` in dark theme.
 - 3D callouts for main-plate dimensions and cheek/stiffener values.
 - Main plate has tangent side connections to its circular upper profile and a centered pin hole.
 - Cheek plates share the main hole center. Up to four can be configured, stacked two per face.
@@ -50,16 +53,16 @@ npm run build
 
 ```text
 src/
-  components/       React form, reusable fields, and Three.js canvas
+  components/       React form and reusable fields
+  2d/               SVG front/side projection calculations and renderer
+  3d/               Three.js canvas, model assembly, geometry, and dimensions
+    geometry/
+      calculations/ Tangents, profiles, placement, and hole clipping
+      draw/         Main plate, cheek plate, and stiffener mesh construction
+    dimensions/
+      calculations/ Dimension callout layout and component labels
+      draw/         Three.js lines, label sprites, and dimension drawing
   data/             Default pad-eye JSON
-  dimensions/
-    calculations/   Dimension callout layout and component labels
-    draw/           Three.js lines, label sprites, and dimension drawing
-  geometry/
-    calculations/   Tangents, profiles, stiffener placement, and hole clipping
-    draw/           Main plate, cheek plate, and stiffener mesh construction
-    buildPadEyeModel.js
-    materials.js
   hooks/             Pad-eye form state and update operations
 ```
 
@@ -70,7 +73,12 @@ flowchart TD
     User[User edits form or theme] --> Form[PadEyeForm / App]
     Form --> State[usePadEyeState]
     State -->|updated padEye| App[App]
-    App --> Canvas[PadEyeCanvas]
+    App --> Mode{View mode}
+    Mode -->|3D| Canvas[3D / PadEyeCanvas]
+    Mode -->|2D| Projection[2D / PadEye2DCanvas]
+    Projection --> View{Projection}
+    View -->|Front| Front[XY front profile SVG]
+    View -->|Side| Side[ZY side profile SVG]
     App --> Form
     Canvas -->|padEye| Builder[buildPadEyeModel]
     Builder --> Main[createMainPlateGeometry]
@@ -91,10 +99,11 @@ flowchart TD
     DimensionDraw --> Model
     Model --> Scene[Three.js scene, camera, and OrbitControls]
     Scene --> Renderer[WebGLRenderer]
+    Projection --> SharedCalc[Shared 3D geometry calculations]
 ```
 
 ## State and Geometry
 
-`src/data/defaultPadEye.json` provides the initial engineering values. `usePadEyeState` owns the editable pad-eye object and immutable update operations. `PadEyeCanvas` rebuilds and renders the Three.js model from that state.
+`src/data/Tests/01defaultPadEye.json` provides the initial engineering values. `usePadEyeState` owns the editable pad-eye object and immutable update operations. The selected canvas rebuilds its 3D model or 2D projection from that state.
 
 Geometry calculations are kept separate from mesh drawing. Dimension layout calculations are likewise separate from the code that draws Three.js lines and text sprites. The project does not generate a separate render-manifest JSON file.

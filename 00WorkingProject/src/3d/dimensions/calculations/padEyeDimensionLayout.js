@@ -1,4 +1,4 @@
-// src/dimensions/calculations/padEyeDimensionLayout.js
+// src/3d/dimensions/calculations/padEyeDimensionLayout.js
 import { calculateComponentLabels } from "./componentLabels.js";
 import { calculateMainPlateDimensionCallouts } from "./mainPlateDimensionCallouts.js";
 

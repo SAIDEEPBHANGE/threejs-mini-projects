@@ -1,4 +1,4 @@
-// src/dimensions/calculations/componentLabels.js
+// src/3d/dimensions/calculations/componentLabels.js
 function createStiffenerLabel(stiffener, mainPlate, units) {
   const leftWidth = Number(mainPlate.leftWidth) || 0;
   const rightWidth = Number(mainPlate.rightWidth) || 0;
